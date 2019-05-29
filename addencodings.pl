@@ -129,7 +129,7 @@ sub scansizes {
 while (<>) {
    if (/^%EndDVIPSBitmapFont/) {
       print "/OIEn IEn def /OFBB FBB def\n" ;
-      if (open E, "$fn.enc") {
+      if (open E, "encs/$fn.enc") {
          @names = () ;
          while (<E>) {
             if (m,dup (\d+) (/\S+) put,) {
