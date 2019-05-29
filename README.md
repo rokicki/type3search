@@ -20,10 +20,17 @@ words (od, be) and also doesn't properly pull text from some
 paragraphs (layout; seems to be autorecognizing tables).  This does
 not happen with any other setup.  Also, preview paste-with-formatting
 is *much* too tiny (though paste-without-formatting works okay).
-Finally, the select with preview is too short by about half.
+Finally, the select with preview is too short by about half.  I think
+OSX Preview is guessing metrics for the bitmap fonts that are way off,
+and this is triggering odd behavior including separating what should
+be a continuous line into what it thinks are text columns.  This would
+also explain why its turning small positive kerns into spaces.  This
+is supported by the formatted paste generating an incredibly tiny
+font size.
 
 After addencodings.pl, Chrome pdf preview drops ligatures, and the
-select is ugly ransom-style.
+select is ugly ransom-style.  Otherwise, search and cut and paste
+seem to work well.
 
 After addencodings.pl, Adobe Acrobat appears to work well.
 
