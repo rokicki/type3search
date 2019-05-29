@@ -1,9 +1,23 @@
 #
 #   Given a dvips file with bitmap fonts, add the appropriate font
-#   encodings.
+#   encodings, bounding box, and scale.
 #
 my @names ;
 my $loc ;
+my $hdpi = 0 ;
+my $hscale = 0 ;
+sub getfontsize {
+   my $fn = shift ;
+   my $r = 0 ;
+   if ($fn =~ /(\d+)/) {
+      $r = $1 ;
+   } elsif ($fn =~ /inch/) {
+      $r = 72 ;
+   } else {
+      die "No obvious way to get font size for $fn" ;
+   }
+   return 0 + $r ;
+}
 sub emit {
    my $s = shift ;
    if ($loc + 1 + length($s) > 75) {
@@ -127,8 +141,14 @@ sub scansizes {
    }
 }
 while (<>) {
+   if (/TeXDict begin \S+ \S+ \S+ (\S+) /) {
+      $hdpi = $1 ;
+   }
    if (/^%EndDVIPSBitmapFont/) {
-      print "/OIEn IEn def /OFBB FBB def\n" ;
+      $fontsize = getfontsize($fn) ;
+      $hscale = $hdpi * $fontsize / 72 ;
+      $hsi = (1+1/8000000) / $hscale ;
+      print "/OIEn IEn def /OFBB FBB def /OFMat FMat def /FMat[$hsi 0 0 -$hsi 0 0]def\n" ;
       if (open E, "encs/$fn.enc") {
          @names = () ;
          while (<E>) {
@@ -143,9 +163,17 @@ while (<>) {
          print "/IEn StandardEncoding def\n" ;
       }
       scansizes() ;
+# we are making this adjustments only for PDF rendering.  We use the
+# horizontal DPI for both, since the horizontal DPI decides word
+# breaking and the vertical DPI is less important.
+#     $llx *= $hsi ;
+#     $urx *= $hsi ;
+#     $lly *= $hsi ;
+#     $ury *= $hsi ;
       print "/FBB[$llx $lly $urx $ury]def\n" ;
       print for @k ;
-      print "/IEn OIEn def /FBB OFBB def\n" ;
+      print "/nn $fid currentfont $hscale scalefont def /$fid [nn setfont] bind cvx def\n" ;
+      print "/IEn OIEn def /FBB OFBB def /FMat OFMat def\n" ;
       $keep = 0 ;
    }
    if ($keep) {
@@ -158,6 +186,7 @@ while (<>) {
       $keep = 1 ;
       chomp ;
       @f = split " ", $_ ;
+      $fid = $f[1] ;
       $fn = $f[2] ;
    }
 }
