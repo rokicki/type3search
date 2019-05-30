@@ -10,7 +10,7 @@ ps2pdf.  The script fakedvips.pl does all of this.  So to run:
     perl fakedvips.pl searchsample
 
 and then run searchsample.pdf through all the PDF viewers you can find
-and make sure searching and cutting/pasting from the document works
+and make sure searching and cutting/pasting from the document work
 correctly.
 
 Accented characters don't work well (we don't expect them to as they
