@@ -6,18 +6,6 @@ my @names ;
 my $loc ;
 my $hdpi = 0 ;
 my $hscale = 0 ;
-sub getfontsize {
-   my $fn = shift ;
-   my $r = 0 ;
-   if ($fn =~ /(\d+)/) {
-      $r = $1 ;
-   } elsif ($fn =~ /inch/) {
-      $r = 72 ;
-   } else {
-      die "No obvious way to get font size for $fn" ;
-   }
-   return 0 + $r ;
-}
 sub emit {
    my $s = shift ;
    if ($loc + 1 + length($s) > 75) {
@@ -145,7 +133,6 @@ while (<>) {
       $hdpi = $1 ;
    }
    if (/^%EndDVIPSBitmapFont/) {
-      $fontsize = getfontsize($fn) ;
       $hscale = $hdpi * $fontsize / 72 ;
       $hsi = (1+1/8000000) / $hscale ;
       print "/OIEn IEn def /OFBB FBB def /OFMat FMat def /FMat[$hsi 0 0 -$hsi 0 0]def\n" ;
@@ -172,7 +159,7 @@ while (<>) {
 #     $ury *= $hsi ;
       print "/FBB[$llx $lly $urx $ury]def\n" ;
       print for @k ;
-      print "/nn $fid currentfont $hscale scalefont def /$fid [nn setfont] bind cvx def\n" ;
+      print "/$fid load 0 $fid currentfont $hscale scalefont put\n" ;
       print "/IEn OIEn def /FBB OFBB def /FMat OFMat def\n" ;
       $keep = 0 ;
    }
@@ -188,5 +175,6 @@ while (<>) {
       @f = split " ", $_ ;
       $fid = $f[1] ;
       $fn = $f[2] ;
+      $fontsize = $f[3] ;
    }
 }

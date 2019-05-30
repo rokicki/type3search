@@ -1,6 +1,5 @@
 - Add options -noscale, -nofontbb to both Perl scripts
 - Write resolution peeking PostScript
-- Write kern vs space peeking TeX source
 - Add Cyrillic (other fonts?) to sample
 - Write results of tests including screenshots
 - Test math cut/paste vs Type 1
