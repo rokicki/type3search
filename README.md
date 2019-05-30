@@ -18,10 +18,3 @@ are rendered as two separate characters).  Formatted copy doesn't
 carry type styles (italic, sans-serif, sizes) but again, we really
 don't expect that to work either.  Ligatures should definitely work,
 however.  Kerns should work, without introducing extra word breaks.
-
-One possibility I considered was that default PostScript fonts have a
-size of one PostScript point, and thus must be scaled for use, but TeX
-bitmap fonts are sizeless.  So I added a scale factor to check this;
-so far this seems to work well.  Further testing and some detailed
-analysis of floating point in the PostScript interpreter will be
-necessary to bless this path.
