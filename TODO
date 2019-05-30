@@ -3,3 +3,5 @@
 - Write kern vs space peeking TeX source
 - Add Cyrillic (other fonts?) to sample
 - Write results of tests including screenshots
+- Test math cut/paste vs Type 1
+- Test accents vs Type 1
