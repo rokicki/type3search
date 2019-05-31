@@ -6,6 +6,18 @@ my @names ;
 my $loc ;
 my $hdpi = 0 ;
 my $hscale = 0 ;
+my $rewritebb = 1 ;
+my $scalefont = 1 ;
+while (@ARGV && $ARGV[0] =~ /^-/) {
+   my $arg = shift @ARGV ;
+   if ($arg eq '--nofontbb') {
+      $rewritebb = 0 ;
+   } elsif ($arg eq '--noscale') {
+      $scalefont = 0 ;
+   } else {
+      die "Bad arg; should be one of --nofontbb or --noscale." ;
+   }
+}
 sub emit {
    my $s = shift ;
    if ($loc + 1 + length($s) > 75) {
@@ -135,6 +147,7 @@ while (<>) {
    if (/^%EndDVIPSBitmapFont/) {
       $hscale = $hdpi * $fontsize / 72 ;
       $hsi = (1+1/8000000) / $hscale ;
+      $hsi = 1 if !$scalefont ;
       print "/OIEn IEn def /OFBB FBB def /OFMat FMat def /FMat[$hsi 0 0 -$hsi 0 0]def\n" ;
       if (open E, "encs/$fn.enc") {
          @names = () ;
@@ -150,16 +163,9 @@ while (<>) {
          print "/IEn StandardEncoding def\n" ;
       }
       scansizes() ;
-# we are making this adjustments only for PDF rendering.  We use the
-# horizontal DPI for both, since the horizontal DPI decides word
-# breaking and the vertical DPI is less important.
-#     $llx *= $hsi ;
-#     $urx *= $hsi ;
-#     $lly *= $hsi ;
-#     $ury *= $hsi ;
-      print "/FBB[$llx $lly $urx $ury]def\n" ;
+      print "/FBB[$llx $lly $urx $ury]def\n" if $rewritebb ;
       print for @k ;
-      print "/$fid load 0 $fid currentfont $hscale scalefont put\n" ;
+      print "/$fid load 0 $fid currentfont $hscale scalefont put\n" if $scalefont ;
       print "/IEn OIEn def /FBB OFBB def /FMat OFMat def\n" ;
       $keep = 0 ;
    }
