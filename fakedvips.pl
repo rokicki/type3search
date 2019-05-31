@@ -15,7 +15,7 @@ my $fn = shift ;
 if (!defined($fn) || ! -f "$fn.dvi") {
    usage() ;
 }
-system("dvips -V1 $fn -o $fn-$$.ps") ;
+system("dvips -q -V1 $fn -o $fn-$$.ps") ;
 system("perl addencodings.pl @safeargs < $fn-$$.ps > $fn.ps") ;
 system("rm $fn-$$.ps") ;
 system("ps2pdf $fn.ps") ;

@@ -3,3 +3,10 @@
 - Write results of tests including screenshots
 - Test math cut/paste vs Type 1
 - Test accents vs Type 1
+
+Tools to use to test:
+
+   ps2pdf (based on ghostview)
+   pstopdf (Apple OSX)
+   pdftopng (Glyph and Cog/xpdf) -- warns if font bounding box is "wrong"
+   gs with png output driver
