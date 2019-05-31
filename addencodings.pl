@@ -72,6 +72,7 @@ sub emitnames {
 $keep = 0 ;
 $fn = undef ;
 $lastcc = 0 ;
+my $slop = 0 ;
 sub scansizes {
    $str = join '', @k ;
    $at = -1 ;
@@ -130,10 +131,14 @@ sub scansizes {
       }
       $numargs[2] = 128 - $numargs[2] ;
       $numargs[3] = $numargs[3] - 127 ;
-      $minx = -$numargs[2] - 1 ;
-      $maxx = $numargs[0] - $numargs[2] + 1 ;
-      $miny = $numargs[3] - $numargs[1] - 1 ;
-      $maxy = $numargs[3] + 1 ;
+      $minx = $numargs[2] ;
+      $maxx = $numargs[0] + $numargs[2] ;
+      $miny = $numargs[3] - $numargs[1] ;
+      $maxy = $numargs[3] ;
+      $minx -= $slop ;
+      $miny -= $slop ;
+      $maxx += $slop ;
+      $maxy += $slop ;
       $llx = $minx if $minx < $llx ;
       $lly = $miny if $miny < $lly ;
       $urx = $maxx if $maxx > $urx ;
