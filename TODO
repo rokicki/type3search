@@ -1,6 +1,7 @@
 - Add options -noscale, -nofontbb to both Perl scripts
 - Write resolution peeking PostScript
-- Add Cyrillic (other fonts?) to sample
+- Add Cyrillic, Greek (other fonts?) to sample
+- Test of columns
 - Write results of tests including screenshots
 - Test math cut/paste vs Type 1
 - Test accents vs Type 1
