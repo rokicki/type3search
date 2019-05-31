@@ -1,4 +1,3 @@
-- Add options -noscale, -nofontbb to both Perl scripts
 - Write resolution peeking PostScript
 - Add Cyrillic, Greek (other fonts?) to sample
 - Write results of tests including screenshots
