@@ -56,7 +56,40 @@ correct.\par
 {5 point font (cmr5): \font\norm=cmr5 \norm \alltest\par}
 {17 point font (cmr10): \font\norm=cmr10 at 17.28 truept \norm \alltest\par}
 
-This is some additional sample text from a random paper.
+\vfill\eject
+\newdimen\fullhsize
+\fullhsize=6.5in \hsize=3.2in
+\def\fullline{\hbox to \fullhsize}
+%
+\def\makeheadline{%
+\vbox to 0pt{\vskip-22.5pt
+\fullline{\vbox to8.5pt{}\the\headline}\vss}
+\nointerlineskip
+}
+%
+\def\makefootline{%
+\baselineskip=2\normalbaselineskip
+\fullline{\the\footline}
+}
+%
+\let\lr=L \newbox\leftcolumn
+\output={\if L\lr
+\global\setbox\leftcolumn=\columnbox \global\let\lr=R
+\else \doubleformat \global\let\lr=L\fi
+\ifnum\outputpenalty>-20000 \else\dosupereject\fi}
+\def\doubleformat{\shipout\vbox{\makeheadline
+\fullline{\box\leftcolumn\hfil\columnbox}
+\makefootline}
+\advancepageno}
+\def\columnbox{\leftline{\pagebody}}
+%
+\def\endtwocol{%
+\vfill\supereject
+\if R\lr \null\vfill\eject\fi
+}
+
+This is some additional sample text from a random paper in two
+column format.
 
 In 1979, in the first edition of his ``Notes on the Magic
 Cube,''
@@ -137,4 +170,4 @@ and cooperation among a small group of people.  As is common with
 recreational mathematics, most work was unfunded, done with spare
 time and spare cycles, driven mostly by curiosity and mere
 challenge.
-\bye
+\endtwocol\end
