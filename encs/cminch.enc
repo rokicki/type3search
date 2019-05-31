@@ -1,7 +1,5 @@
 /Encoding 256 array
  0 1 255 { 1 index exch /.notdef put} for
-dup 32 /space put
-dup 45 /hyphen put
 dup 48 /zero put
 dup 49 /one put
 dup 50 /two put
@@ -38,6 +36,4 @@ dup 87 /W put
 dup 88 /X put
 dup 89 /Y put
 dup 90 /Z put
-dup 128 /space put
-dup 195 /space put
 readonly def

@@ -2,7 +2,6 @@
 0 1 255 {1 index exch /.notdef put } for
 dup 0 /minus put
 dup 24 /similar put
-dup 32 /space put
 dup 48 /ghost put
 dup 58 /logicalnot put
 dup 60 /Rfractur put
@@ -41,9 +40,4 @@ dup 103 /braceright put
 dup 106 /bar put
 dup 110 /backslash put
 dup 120 /section put
-dup 128 /space put
-dup 160 /space put
-dup 161 /minus put
-dup 187 /similar put
-dup 195 /space put
 readonly def

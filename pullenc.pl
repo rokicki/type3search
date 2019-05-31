@@ -2,6 +2,16 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
    $fn = $font ;
    $fn =~ s,.*/,, ;
    $fn =~ s,.pfb,, ;
+   @exist = () ;
+   open F, "tftopl $fn |" or die "Can't run tftopl" ;
+   while (<F>) {
+      if (/^\(CHARACTER O (\d+)/) {
+         $exist[oct($1)] = 1 ;
+      } elsif (/^\(CHARACTER C (\S)/) {
+         $exist[ord($1)] = 1 ;
+      }
+   }
+   close F ;
    open F, "$font" or die "Can't read $font" ;
    open G, ">$fn.enc" or die "Can't write $font encoding" ;
    $keep = 0 ;
@@ -9,6 +19,8 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
       if (/Encoding/) {
          $keep++ ;
       }
+      # skip letters not in the tfm file
+      next if $keep && /dup (\d+)/ && @exist && !$exist[$1] ;
       print G $_ if $keep ;
       if ($keep && /readonly def/) {
          last ;

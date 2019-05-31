@@ -10,7 +10,6 @@ dup 8 /Yalt put
 dup 9 /Zalt put
 dup 18 /quoteleft put
 dup 19 /quoteright put
-dup 32 /space put
 dup 33 /exclam put
 dup 38 /ampersand put
 dup 39 /quotesingle put
@@ -93,18 +92,4 @@ dup 121 /y put
 dup 122 /z put
 dup 125 /quotedbl put
 dup 127 /onealt put
-dup 128 /space put
-dup 160 /space put
-dup 162 /dalt put
-dup 163 /fnos put
-dup 164 /falt put
-dup 165 /galt put
-dup 166 /kalt put
-dup 167 /talt put
-dup 169 /Yalt put
-dup 170 /Zalt put
-dup 181 /quoteleft put
-dup 182 /quoteright put
-dup 195 /space put
-dup 196 /onealt put
 readonly def

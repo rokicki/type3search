@@ -50,19 +50,4 @@ dup 122 /bracehtipdownleft put
 dup 123 /bracehtipdownright put
 dup 124 /bracehtipupleft put
 dup 125 /bracehtipupright put
-dup 128 /arrowleft put
-dup 160 /space put
-dup 169 /braceleftbig put
-dup 170 /bracerightbig put
-dup 173 /braceleftBig put
-dup 174 /bracerightBig put
-dup 175 /braceleftbigg put
-dup 176 /bracerightbigg put
-dup 177 /braceleftBigg put
-dup 178 /bracerightBigg put
-dup 187 /arrowlefttophalf put
-dup 188 /arrowleftbothalf put
-dup 189 /arrowrighttophalf put
-dup 190 /arrowrightbothalf put
-dup 195 /arrowleft put
 readonly def
