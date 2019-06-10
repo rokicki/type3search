@@ -65,7 +65,7 @@ sub emitnames {
          emit($names[$i]) ;
       }
    }
-   emit("]def/IEn $enc{$k} N") ;
+   emit("]N/IEn $enc{$k} N") ;
    print "\n" ;
 }
 @k = () ;
@@ -153,7 +153,7 @@ while (<>) {
       $hscale = $hdpi * $fontsize / 72 ;
       $hsi = (1+1/8000000) / $hscale ;
       $hsi = 1 if !$scalefont ;
-      print "/OIEn IEn N/OFBB FBB N/OFMat FMat N/FMat[$hsi 0 0 -$hsi 0 0]N\n" ;
+      print "IEn FBB FMat/FMat[$hsi 0 0 -$hsi 0 0]N\n" ;
       if (open E, "encs/$fn.enc") {
          @names = () ;
          while (<E>) {
@@ -168,10 +168,10 @@ while (<>) {
          print "/IEn StandardEncoding N\n" ;
       }
       scansizes() ;
-      print "/FBB[$llx $lly $urx $ury]def\n" if $rewritebb ;
+      print "/FBB[$llx $lly $urx $ury]N\n" if $rewritebb ;
       print for @k ;
       print "/$fid load 0 $fid currentfont $hscale scalefont put\n" if $scalefont ;
-      print "/IEn OIEn N/FBB OFBB N/FMat OFMat N\n" ;
+      print "/FMat X/FBB X/IEn X\n" ;
       $keep = 0 ;
    }
    if ($keep) {
