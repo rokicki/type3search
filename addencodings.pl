@@ -41,7 +41,7 @@ sub emitnames {
    }
    my $k = join ',', map{$_ || '?'}@names ;
    if (defined($enc{$k})) {
-      print "/IEn $enc{$k} def\n" ;
+      print "/IEn $enc{$k} N\n" ;
       return ;
    } else {
       $enc{$k} = "EN$encnum" ;
@@ -65,7 +65,7 @@ sub emitnames {
          emit($names[$i]) ;
       }
    }
-   emit("]def/IEn $enc{$k} def") ;
+   emit("]def/IEn $enc{$k} N") ;
    print "\n" ;
 }
 @k = () ;
@@ -153,7 +153,7 @@ while (<>) {
       $hscale = $hdpi * $fontsize / 72 ;
       $hsi = (1+1/8000000) / $hscale ;
       $hsi = 1 if !$scalefont ;
-      print "/OIEn IEn def /OFBB FBB def /OFMat FMat def /FMat[$hsi 0 0 -$hsi 0 0]def\n" ;
+      print "/OIEn IEn N/OFBB FBB N/OFMat FMat N/FMat[$hsi 0 0 -$hsi 0 0]N\n" ;
       if (open E, "encs/$fn.enc") {
          @names = () ;
          while (<E>) {
@@ -165,13 +165,13 @@ while (<>) {
          emitnames() ;
       } else {
          warn "Cannot find encoding for $fn.enc" ;
-         print "/IEn StandardEncoding def\n" ;
+         print "/IEn StandardEncoding N\n" ;
       }
       scansizes() ;
       print "/FBB[$llx $lly $urx $ury]def\n" if $rewritebb ;
       print for @k ;
       print "/$fid load 0 $fid currentfont $hscale scalefont put\n" if $scalefont ;
-      print "/IEn OIEn def /FBB OFBB def /FMat OFMat def\n" ;
+      print "/IEn OIEn N/FBB OFBB N/FMat OFMat N\n" ;
       $keep = 0 ;
    }
    if ($keep) {
