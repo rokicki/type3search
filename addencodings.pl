@@ -72,7 +72,7 @@ sub emitnames {
 $keep = 0 ;
 $fn = undef ;
 $lastcc = 0 ;
-my $slop = 20 ;
+my $slop = 1 ;
 sub scansizes {
    $str = join '', @k ;
    $at = -1 ;

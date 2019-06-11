@@ -1,4 +1,4 @@
-- Write resolution peeking PostScript
+- Write math resolution peeking PostScript
 - Add Cyrillic, Greek (other fonts?) to sample
 - Write results of tests including screenshots
 - Test math cut/paste vs Type 1
@@ -10,3 +10,23 @@ Tools to use to test:
    pstopdf (Apple OSX)
    pdftopng (Glyph and Cog/xpdf) -- warns if font bounding box is "wrong"
    gs with png output driver
+
+Dvips integration:
+
+Read static encoding vectors and hash them into deduplication array
+For every read static encoding vector, deduplicate
+Free encoding vectors only in deduplication
+Deduplication should include entry indicating downloaded name
+Fonts should add entry for bitmap encoding vector
+
+Bitmap font download:
+
+Get encoding:
+   If we have it, return it
+   Scan list of font/encoding pairs; if we find a match, return it
+   Try to load from encoding file; if good, add to list and return it
+   Try to fall back to static bitmap fonts (and warn); if good, add to list
+   Warn again and fall back to a static ASCII/standard encoding
+
+We will ignore PostScript memory consumption for the moment, as this makes
+a small delta.
