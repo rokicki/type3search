@@ -1,3 +1,8 @@
+Okay, Cyrillic doesn't work, probably other symbol fonts don't work.
+We probably want to drop these then since they don't function correctly.
+
+Or we consider a completely different approach.
+
 - Write math resolution peeking PostScript
 - Add Cyrillic, Greek (other fonts?) to sample
 - Write results of tests including screenshots
