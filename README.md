@@ -113,8 +113,6 @@ such as the following:
 
 Or you can view searchsample-nofontbb-noscale.pdf in this repository.
 
-and viewing the resulting PDF in your favorite viewer.
-
 ## A note on testing
 
 PDF viewers appear to implement searching and copying text in
