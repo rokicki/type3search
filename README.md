@@ -264,9 +264,10 @@ acceptably.
 
 I then tried to think of other ways that PDF renderers might determine
 appropriate font metrics required to do the font extraction.  Every
-font is required to have a /FontBBox entry.  Normally giving the cumulative
-bounding box of all the characters in a font, this is permitted to be
-all zeros and dvips takes advantage of this.  But perhaps this matrix was
+font is required to have a /FontBBox entry.  Normally this gives
+the cumulative bounding box of all the characters in a font. But
+it is permitted to be
+all zeros, and dvips takes advantage of this.  But perhaps this matrix was
 being used by PDF rendering programs for font metrics, and the zero values
 were throwing off some programs.  So I modified my test script to
 calculate and add this information.  You can follow along with this
