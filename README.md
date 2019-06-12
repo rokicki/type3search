@@ -110,6 +110,8 @@ such as the following:
 
     perl fakedvips.pl --nofontbb --noscale yourdvibasename
 
+Or you can view searchsample-nofontbb-noscale.pdf in this repository.
+
 and viewing the resulting PDF in your favorite viewer.
 
 ## A note on testing
@@ -142,6 +144,8 @@ dvi file processed through dvips with type 1 fonts and ps2pdf.
 
 In this repository I am including searchsample.tex, the test file I
 am using for much of this work.
+
+You can see the Type 1 pdf here as searchsampleT1.pdf.
 
 ## Results: Just Add Encoding
 
@@ -230,6 +234,8 @@ command:
 
     perl fakedvips.pl --nofontbb yourdvibasename
 
+Or you can view searchsample-nofontbb.pdf in this repository.
+
 Once again, Acrobat just worked, no issues.
 
 OSX Preview still did not highlight the text, but when I
@@ -269,6 +275,8 @@ command:
 
     perl fakedvips.pl --noscale yourdvibasename
 
+Or you can view searchsample-noscale.pdf in this repository.
+
 To isolate dependencies, in this section we will present the results
 with just the font bounding box and the encoding vector, not using the
 font scaling described in the previous section.
@@ -304,6 +312,8 @@ idiomatic PostScript font scaling, and also giving a proper font
 bounding box.  You can try this with the following command:
 
     perl fakedvips.pl yourdvibasename
+
+Or you can view searchsample.pdf in this repository.
 
 Once again, Acrobat just worked.
 
