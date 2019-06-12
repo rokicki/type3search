@@ -119,7 +119,7 @@ PDF viewers appear to implement searching and copying text in
 the same way, by a process called text extraction.  To test search,
 rather than searching for individual words, it's often easier to
 just copy the entire document and paste it into another program
-and verify that the text pasted is correct.  This lets you find
+and verify that the pasted text is correct.  This lets you find
 text that is successfully extracted, and thus searchable, as well
 as text that is not successfully extracted, and it also gives you
 an idea of what might have gone wrong.
