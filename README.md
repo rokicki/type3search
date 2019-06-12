@@ -180,7 +180,7 @@ that was sized to the characters of that word, like a ransom note.
 On the other hand, the text that was copied did appear to be copied
 in linear order and the selection boxes were functional, if not pretty.
 
-(I also tested Safari, and it behaved in pretty much the same way as
+I also tested Safari, and it behaved in pretty much the same way as
 OSX Preview, so I will not say anything more about Safari here.
 
 The Firefox previewer behaved a lot like OSX Preview, but not exactly.
