@@ -26,7 +26,8 @@ this work.
 
 # Current Status
 
-I have completed the changes to dvips (except for fully
+I have completed the changes to dvips (except for making it
+optional and fully
 documenting the implementation).  I also have the experimental
 code in this directory so you can see the impact without
 needing to rebuild dvips.
