@@ -72,8 +72,11 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
-Add support for latin modern and probably some other fonts that exist
-in METAFONT.
+Add support for ome other fonts that exist in Metafont (can't do
+latin modern because they don't have Metafont sources).
+
+Support the Standard Adobe encodings without reencoding (maybe?  do they
+really follow Standard Encoding or is that just a shortcut?)
 
 Make the new dvips functionality a command-line and
 configuration-time option.
