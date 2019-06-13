@@ -14,6 +14,7 @@ close F ;
 my $count = scalar keys %unicode ;
 print "Read $count glyph names from the Adobe Glyph Names for New Fonts.\n" ;
 for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/*/*.pfb") {
+   next if $font =~ /cyrillic/ || $font =~ /latxfont/ || $font =~ /symbols/ ;
    $fn = $font ;
    $fn =~ s,.*/,, ;
    $fn =~ s,.pfb,, ;
@@ -28,7 +29,7 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
    }
    close F ;
    open F, "$font" or die "Can't read $font" ;
-   open G, ">$fn.enc" or die "Can't write $font encoding" ;
+   open G, ">encs/$fn.enc" or die "Can't write $font encoding" ;
    $keep = 0 ;
    $adobeglyph = 0 ;
    $nonadobeglyph = 0 ;
@@ -56,7 +57,7 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
    }
    close F ;
    close G ;
-   my $r = `md5 $fn.enc` ;
+   my $r = `md5 encs/$fn.enc` ;
    chomp $r ;
    @f = split " ", $r ;
    $r = $f[-1] ;
