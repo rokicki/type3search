@@ -7,7 +7,8 @@ Chrome PDF viewer, and OSX Preview.
 News:  Using /uniXXX style encodings may enable us to get more
 code points working properly, but I need to figure out what code
 points are appropriate for the various fonts.  Rabbit hole or
-proper direction?
+proper direction?  The Adobe doc is here:
+https://github.com/adobe-type-tools/agl-specification
 
 # Introduction
 
