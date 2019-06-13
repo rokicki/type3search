@@ -75,6 +75,8 @@ these years---and it could have easily been fixed at any time.
 Make the new dvips functionality a command-line and
 configuration-time option.
 
+Try /uniXXXX names.
+
 Test pkfix (or other tools that replace bitmaps with Type 1 fonts)
 to ensure they are not broken.
 
