@@ -83,7 +83,18 @@ these years---and it could have easily been fixed at any time.
 Make the new dvips functionality a command-line and
 configuration-time option.
 
-Try /uniXXXX names.
+Since some fonts don't work (Cyrillic), we don't want to provide
+encoding files for them probably since that would imply they
+should work.  But not supplying encoding files means dvips users
+of these bitmap fonts will now get (a single) warning message
+every time they run.  Is this reasonable?  This may be more
+important if we decide not to encode other fonts that won't work
+anyway (cmex10 in particular).
+
+Try /uniXXXX names; this failed.  Just glyph names alone
+(of the form /u####) did not work.  I also experimented with
+adding a /FontInfo/GlyphNames2Unicode and could not get that
+to work.  Abandoning this line for the moment.
 
 Test pkfix (or other tools that replace bitmaps with Type 1 fonts)
 to ensure they are not broken.
