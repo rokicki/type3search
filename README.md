@@ -8,7 +8,9 @@ News:  Using /uniXXX style encodings may enable us to get more
 code points working properly, but I need to figure out what code
 points are appropriate for the various fonts.  Rabbit hole or
 proper direction?  The Adobe doc is here:
-https://github.com/adobe-type-tools/agl-specification
+https://github.com/adobe-type-tools/agl-specification.  Tried
+implementing this for a single font; it utterly fails.  See
+the triuninames branch for the experimental results.
 
 # Introduction
 
