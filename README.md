@@ -4,14 +4,6 @@ support searching and copying text.
 Status:  Works well for English-language text in Acrobat Reader,
 Chrome PDF viewer, and OSX Preview.
 
-News:  Using /uniXXX style encodings may enable us to get more
-code points working properly, but I need to figure out what code
-points are appropriate for the various fonts.  Rabbit hole or
-proper direction?  The Adobe doc is here:
-https://github.com/adobe-type-tools/agl-specification.  Tried
-implementing this for a single font; it utterly fails.  See
-the triuninames branch for the experimental results.
-
 # Introduction
 
 In the spring of 2019 I was surprised to hear that PDFs generated
@@ -79,6 +71,9 @@ Encoding vector is nonsense that search and copy have not worked all
 these years---and it could have easily been fixed at any time.
 
 # Things that need doing
+
+Add support for latin modern and probably some other fonts that exist
+in METAFONT.
 
 Make the new dvips functionality a command-line and
 configuration-time option.
