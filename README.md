@@ -339,7 +339,9 @@ proper encoding to be recognized.
 Firefox did not work as well.  Word spaces were still not recognized;
 all the words were run together as before, even though small positive
 kerns were treated as word spaces.  When using Type 1 fonts instead of
-Type 3 bitmaps, none of these problems appeared.
+Type 3 bitmaps, none of these problems appeared.  I believe I have
+found the bug in the Firefox plugin source, and will be submitting a
+pull request.
 
 # Implementation: Design Choices
 
