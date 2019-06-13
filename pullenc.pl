@@ -32,6 +32,7 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
    $keep = 0 ;
    $adobeglyph = 0 ;
    $nonadobeglyph = 0 ;
+   @missingglyphs = () ;
    while (<F>) {
       if (/Encoding/) {
          $keep++ ;
@@ -49,6 +50,7 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
             $adobeglyph++ ;
          } else {
             $nonadobeglyph++ ;
+            push @missingglyphs, $glyphname ;
          }
       }
    }
@@ -59,7 +61,7 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
    @f = split " ", $r ;
    $r = $f[-1] ;
    if (!defined($f{$r})) { # first time we saw this encoding
-      print "For font $fn saw $adobeglyph Adobe glyphs and $nonadobeglyph non-Adobe glyphs\n" ;
+      print "For font $fn saw $adobeglyph Adobe glyphs and $nonadobeglyph non-Adobe glyphs [@missingglyphs]\n" ;
    }
    push @{$f{$r}}, $fn ;
 }
