@@ -13,6 +13,63 @@ while (<F>) {
 close F ;
 my $count = scalar keys %unicode ;
 print "Read $count glyph names from the Adobe Glyph Names for New Fonts.\n" ;
+#
+#   See if we can find a corresponding htf file to get Unicode code points.
+#
+sub loadhtf {
+   @unicodemap = () ;
+   my $fn = shift ;
+   open F, "$fn.htf" or die "Can't open $fn.htf" ;
+   my $head = scalar <F> ;
+   chomp $head ;
+   @f = split " ", $head ;
+   my $lo = $f[1] ;
+   my $hi = $f[2] ;
+   my $cc ;
+   my $unicodeseen = 0 ;
+   for ($cc=$lo; $cc<=$hi; $cc++) {
+      my $lin = scalar <F> ;
+      chomp $lin ;
+      $lin =~ s/''b/''/g ; # patch what looks like a bug in the htf file
+      my @f = () ;
+      my $q = substr($lin, 0, 1) ;
+      my $at = 0 ;
+      while (1) {
+         $at++ while $at < length($lin) && substr($lin, $at, 1) le ' ' ;
+         last if $at >= length($lin) ;
+         last if substr($lin, $at, 1) eq '%' ; # ends with comment
+         $tok = '' ;
+         if (substr($lin, $at, 1) eq $q) { # quoted token
+            $at++ ;
+            $tok .= substr($lin, $at++, 1) while $at < length($lin) && substr($lin, $at, 1) ne $q ;
+            $at++ ;
+         } else {                          # whitespace-separated token
+            $tok .= substr($lin, $at++, 1) while $at < length($lin) && substr($lin, $at, 1) gt ' ' ;
+         }
+         push @f, $tok ;
+      }
+      die "Did not see three tokens [@f] [$lin]" if @f != 3 ;
+      die "Bad cc; expected $cc saw $f[2]" if $f[2] ne $cc ;
+      # only pick up unicode code points
+      if ($f[0] =~ /\&\#x([0-9a-fA-F]{4})/) {
+         $unicodemap[$cc] = $1 ;
+         $unicodeseen++ ;
+      }
+   }
+   close F ;
+   die "Did not see unicode code points" if $unicodeseen == 0 ;
+   return 1 ;
+}
+sub searchhtf {
+   my $fn = shift ;
+   while ($fn ne '') {
+      if (-f "$fn.htf") {
+         return loadhtf($fn) ;
+      }
+      $fn = substr($fn, 0, length($fn)-1) ;
+   }
+   return 0 ;
+}
 for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/*/*.pfb") {
    $fn = $font ;
    $fn =~ s,.*/,, ;
@@ -27,12 +84,15 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
       }
    }
    close F ;
-   open F, "$font" or die "Can't read $font" ;
-   open G, ">$fn.enc" or die "Can't write $font encoding" ;
    $keep = 0 ;
    $adobeglyph = 0 ;
    $nonadobeglyph = 0 ;
+   @unicodemap = () ;
    @missingglyphs = () ;
+   searchhtf($fn) ;
+   %mapped = () ;
+   open F, "$font" or die "Can't read $font" ;
+   open G, ">encs/$fn.enc" or die "Can't write $font encoding" ;
    while (<F>) {
       if (/Encoding/) {
          $keep++ ;
@@ -40,23 +100,37 @@ for $font (glob "/usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
       # skip letters not in the tfm file
       next if $keep && /dup (\d+)/ && @exist && !$exist[$1] ;
       if ($keep) {
-         print G $_ ;
-         last if /readonly def/ ;
-         next if /Encoding 256 array/ || /0 1 255/ ;
-         chomp ;
-         m,dup (\d+) /(\S+) put, or die "Bad format in encoding line: [$_]\n" ;
-         $glyphname = $2 ;
-         if (defined($unicode{$glyphname})) {
-            $adobeglyph++ ;
+         if (/^dup/) {
+            chomp ;
+            m,dup (\d+) /(\S+) put, or die "Bad format in encoding line: [$_]\n" ;
+            $cc = $1 ;
+            $glyphname = $2 ;
+            if (defined($unicode{$glyphname})) {
+               $adobeglyph++ ;
+            } else {
+               $nonadobeglyph++ ;
+               push @missingglyphs, $glyphname ;
+               if (defined($unicodemap[$cc])) {
+                  # Substitute the unicode version
+                  $glyphname = "u$unicodemap[$cc]" ;
+                  $mapped{$glyphname} = hex($unicodemap[$cc]) ;
+               }
+            }
+            print G "dup $cc /$glyphname put\n" ;
          } else {
-            $nonadobeglyph++ ;
-            push @missingglyphs, $glyphname ;
+            print G $_ ;
+            last if /readonly def/ ;
          }
       }
    }
    close F ;
    close G ;
-   my $r = `md5 $fn.enc` ;
+   if (keys %mapped) {
+      for (keys %mapped) {
+         print "/$_ $mapped{$_} def\n" ;
+      }
+   }
+   my $r = `md5 encs/$fn.enc` ;
    chomp $r ;
    @f = split " ", $r ;
    $r = $f[-1] ;
