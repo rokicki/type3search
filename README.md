@@ -4,6 +4,11 @@ support searching and copying text.
 Status:  Works well for English-language text in Acrobat Reader,
 Chrome PDF viewer, and OSX Preview.
 
+News:  Using /uniXXX style encodings may enable us to get more
+code points working properly, but I need to figure out what code
+points are appropriate for the various fonts.  Rabbit hole or
+proper direction?
+
 # Introduction
 
 In the spring of 2019 I was surprised to hear that PDFs generated
