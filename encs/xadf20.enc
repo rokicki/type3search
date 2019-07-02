@@ -1,0 +1,14 @@
+/Encoding 256 array
+ 0 1 255 { 1 index exch /.notdef put} for
+dup 7/Upsilon put
+dup 8/Phi put
+dup 9/Psi put
+dup 20/caron put
+dup 21/breve put
+dup 30/OE put
+dup 31/Oslash put
+dup 33/exclam put
+dup 34/quotedblright put
+dup 85/U put
+dup 86/V put
+readonly def

@@ -1,0 +1,11 @@
+/Encoding 256 array
+ 0 1 255 { 1 index exch /.notdef put} for
+dup 0/grave put
+dup 1/acute put
+dup 64/at put
+dup 65/A put
+dup 128/Abreve put
+dup 129/Aogonek put
+dup 192/Agrave put
+dup 193/Aacute put
+readonly def

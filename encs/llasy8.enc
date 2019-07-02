@@ -1,0 +1,19 @@
+/Encoding 256 array
+ 0 1 255 { 1 index exch /.notdef put} for
+dup 1/acute put
+dup 2/circumflex put
+dup 3/tilde put
+dup 4/dieresis put
+dup 40/parenleft put
+dup 41/parenright put
+dup 42/asterisk put
+dup 43/plus put
+dup 48/zero put
+dup 49/one put
+dup 50/two put
+dup 51/three put
+dup 58/colon put
+dup 59/semicolon put
+dup 60/less put
+dup 61/equal put
+readonly def

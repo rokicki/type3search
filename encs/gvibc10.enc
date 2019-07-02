@@ -1,0 +1,29 @@
+/Encoding 256 array
+ 0 1 255 { 1 index exch /.notdef put} for
+dup 70/F put
+dup 79/O put
+dup 80/P put
+dup 84/T put
+dup 88/X put
+dup 97/a put
+dup 98/b put
+dup 100/d put
+dup 101/e put
+dup 102/f put
+dup 103/g put
+dup 104/h put
+dup 105/i put
+dup 107/k put
+dup 108/l put
+dup 109/m put
+dup 110/n put
+dup 111/o put
+dup 112/p put
+dup 113/q put
+dup 114/r put
+dup 115/s put
+dup 116/t put
+dup 120/x put
+dup 121/y put
+dup 122/z put
+readonly def

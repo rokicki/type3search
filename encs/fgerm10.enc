@@ -1,0 +1,34 @@
+/Encoding 256 array
+ 0 1 255 { 1 index exch /.notdef put} for
+dup 19/guillemotleft put
+dup 20/guillemotright put
+dup 21/endash put
+dup 22/emdash put
+dup 25/dotlessi put
+dup 33/exclam put
+dup 34/quotedbl put
+dup 48/zero put
+dup 49/one put
+dup 50/two put
+dup 51/three put
+dup 52/four put
+dup 65/A put
+dup 66/B put
+dup 67/C put
+dup 68/D put
+dup 75/K put
+dup 76/L put
+dup 77/M put
+dup 78/N put
+dup 79/O put
+dup 80/P put
+dup 81/Q put
+dup 82/R put
+dup 83/S put
+dup 85/U put
+dup 99/c put
+dup 101/e put
+dup 104/h put
+dup 105/i put
+dup 115/s put
+readonly def

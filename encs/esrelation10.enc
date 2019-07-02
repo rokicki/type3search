@@ -1,0 +1,19 @@
+/Encoding  256 array
+0 1 255 {1 index exch /.notdef put} for
+dup 17 /quotedblright put
+dup 18 /quotedblbase put
+dup 19 /guillemotleft put
+dup 20 /guillemotright put
+dup 21 /endash put
+dup 22 /emdash put
+dup 23 /cwm put
+dup 24 /perthousand put
+dup 32 /space put
+dup 35 /numbersign put
+dup 36 /dollar put
+dup 37 /percent put
+dup 38 /ampersand put
+dup 40 /parenleft put
+dup 41 /parenright put
+dup 42 /asterisk put
+ readonly def
