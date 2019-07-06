@@ -4,6 +4,10 @@ support searching and copying text.
 Status:  Works well for English-language text in Acrobat Reader,
 Chrome PDF viewer, and OSX Preview.
 
+Recent updates:  Changing way encoding files are stored for dvips
+to reduce size and count of files and to allow future improvements
+without changing the dvips binary.
+
 # Introduction
 
 In the spring of 2019 I was surprised to hear that PDFs generated
@@ -26,9 +30,11 @@ this work.
 
 # Current Status
 
-I have completed the changes to dvips (except for making it
-optional and fully
-documenting the implementation).  I also have the experimental
+I have implemented the changes to dvips (except for making it
+optional and fully documenting the implementation).  I have
+not yet implemented some new ideas and will be revising this
+implementation.
+I also have the experimental
 code in this directory so you can see the impact without
 needing to rebuild dvips.
 
@@ -72,37 +78,90 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
-Add support for ome other fonts that exist in Metafont (can't do
-latin modern because they don't have Metafont sources).
+Make dvips-all.enc shorter by packing the encodings as dvips
+would write them.
 
-Support the Standard Adobe encodings without reencoding (maybe?  do they
-really follow Standard Encoding or is that just a shortcut?)
+Make dvips not care about the actual contents of the encoding file.
 
-Make the new dvips functionality a command-line and
-configuration-time option.
+Enable the encodings to update the FontDictionary (for instance) by making
+the object on the stack be an executable procedure rather than
+just a static array.
 
-Since some fonts don't work (Cyrillic), we don't want to provide
-encoding files for them probably since that would imply they
-should work.  But not supplying encoding files means dvips users
-of these bitmap fonts will now get (a single) warning message
-every time they run.  Is this reasonable?  This may be more
-important if we decide not to encode other fonts that won't work
-anyway (cmex10 in particular).
-
-Try /uniXXXX names; this failed.  Just glyph names alone
-(of the form /u####) did not work.  I also experimented with
-adding a /FontInfo/GlyphNames2Unicode and could not get that
-to work.  Abandoning this line for the moment.
+Make the new dvips functionality a command-line and configuration-time
+option.  Include the ability to switch on/off the new font scaling,
+the font bounding box, as well as the overall functionality.
 
 Test pkfix (or other tools that replace bitmaps with Type 1 fonts)
 to ensure they are not broken.
+
+Test with font compression.
+
+Test with memory limited sectioning.
 
 Test more PDF renderers.  Test ancient Postscript renderers (original
 LaserWriter?).
 
 Do more bit-for-bit tests between old and new dvips.
 
+Do text extraction on random dvi files comparing results using
+Type 1 fonts and bitmapped fonts; is the same text extracted?
+Can we explain any differences?
+
 Should we consider the memory usage of the new setup?
+
+# Phase two implementation
+
+After finishing the initial implementation, and discussing it with
+Karl, some improvements were suggested.
+
+* Instead of having one file for each font (which would be 1465
+new files if we supported all the MetaFont/Type 1 fonts in TeXLive),
+have a single composite file that gives all the encodings for all
+the fonts, sharing encodings between fonts that have identical
+encodings.  This new file is relatively tiny (300K) compared to the
+several megabytes separated files would have taken.
+
+* Because of this simple solution, eliminate the built-in encodings
+we planned to put into the dvips executable.
+
+* Make dvips oblivious to the actual contents of the encoding; don't
+try to pick out glyph names anymore.  Dvips doesn't do anything with
+them anyway.
+
+* Allow future file-driven extensions (without changing the dvips
+executable) by allowing the encoding files to also include new
+dictionaries or arbitrarily executable PostScript.  If someone can
+figure out a way to get Unicode code points from PostScript into
+PDF, this will permit non-English characters to work too.
+
+Because of all of this the current implementation is in a state of
+flux.
+
+# Rejected Ideas
+
+During the course of experimentation and development, several
+ideas were suggested, considered, tested, and ultimately rejected.
+Here are those ideas and the reasons for rejection.
+
+* Unicode glyph names, such as /u1234 or /uni1234.  I tried this
+in a number of forms and was never able to get them to be recognized
+as code points.  But the dvips code does support these if they can
+be made to work somehow.
+
+* Adding special dictionaries that give code point mappings for
+glyph names.  Like the above suggestions, I tried this in a number
+of ways but was not able to get it to work.  But the phase two
+implementation will support this at the file level.
+
+* Add in fake spaces so spaces are properly recognized.  This
+would require too many changes to dvips and would not solve the
+problem of some kerns being falsely interpreted as spaces.  The
+current code (using font bounding boxes and idiomatic font scaling)
+seems to work well in the viewers I tested.  Long term, for
+accessibility, things like math should be given "alternate"
+representations if these representations would successfully pass
+through the ps2pdf pipeline, but I consider this out of scope
+for now.
 
 # Chronological Notes
 
@@ -357,9 +416,10 @@ pull request.
 
 # Implementation: Design Choices
 
-* Make it work properly even if they only have the dvips executable.
-That is, make it compatible with existing tex.pro files and not
-(absolutely) require the bitmap encoding files.
+* Make it work properly even if they only have the dvips executable
+(and, now, a file containing the encodings for the standard fonts).
+Make it compatible with existing tex.pro files and not
+require individual bitmap encoding files for each font.
 
 * Put any needed new code in a specific file, and make these changes
 an option (for now) in case any issues arise.  I'm not sure if the
