@@ -1,259 +1,259 @@
-/Encoding  256 array
-0 1 255 {1 index exch /.notdef put} for
-dup 0 /dummya put
-dup 1 /dotaccent put
-dup 2 /fi put
-dup 3 /fl put
-dup 4 /fraction put
-dup 5 /hungarumlaut put
-dup 6 /Lslash put
-dup 7 /lslash put
-dup 8 /ogonek put
-dup 9 /ring put
-dup 10 /dummyb put
-dup 11 /breve put
-dup 12 /minus put
-dup 13 /dummyc put
-dup 14 /Zcaron put
-dup 15 /zcaron put
-dup 16 /caron put
-dup 17 /dotlessi put
-dup 18 /dotlessj put
-dup 19 /ff put
-dup 20 /ffi put
-dup 21 /ffl put
-dup 22 /notequal put
-dup 23 /infinity put
-dup 24 /lessequal put
-dup 25 /greaterequal put
-dup 26 /partialdiff put
-dup 27 /summation put
-dup 28 /product put
-dup 29 /pi put
-dup 30 /grave put
-dup 31 /quotesingle put
-dup 32 /space put
-dup 33 /exclam put
-dup 34 /quotedbl put
-dup 35 /numbersign put
-dup 36 /dollar put
-dup 37 /percent put
-dup 38 /ampersand put
-dup 39 /quoteright put
-dup 40 /parenleft put
-dup 41 /parenright put
-dup 42 /asterisk put
-dup 43 /plus put
-dup 44 /comma put
-dup 45 /hyphen put
-dup 46 /period put
-dup 47 /slash put
-dup 48 /zero put
-dup 49 /one put
-dup 50 /two put
-dup 51 /three put
-dup 52 /four put
-dup 53 /five put
-dup 54 /six put
-dup 55 /seven put
-dup 56 /eight put
-dup 57 /nine put
-dup 58 /colon put
-dup 59 /semicolon put
-dup 60 /less put
-dup 61 /equal put
-dup 62 /greater put
-dup 63 /question put
-dup 64 /at put
-dup 65 /A put
-dup 66 /B put
-dup 67 /C put
-dup 68 /D put
-dup 69 /E put
-dup 70 /F put
-dup 71 /G put
-dup 72 /H put
-dup 73 /I put
-dup 74 /J put
-dup 75 /K put
-dup 76 /L put
-dup 77 /M put
-dup 78 /N put
-dup 79 /O put
-dup 80 /P put
-dup 81 /Q put
-dup 82 /R put
-dup 83 /S put
-dup 84 /T put
-dup 85 /U put
-dup 86 /V put
-dup 87 /W put
-dup 88 /X put
-dup 89 /Y put
-dup 90 /Z put
-dup 91 /bracketleft put
-dup 92 /backslash put
-dup 93 /bracketright put
-dup 94 /asciicircum put
-dup 95 /underscore put
-dup 96 /quoteleft put
-dup 97 /a put
-dup 98 /b put
-dup 99 /c put
-dup 100 /d put
-dup 101 /e put
-dup 102 /f put
-dup 103 /g put
-dup 104 /h put
-dup 105 /i put
-dup 106 /j put
-dup 107 /k put
-dup 108 /l put
-dup 109 /m put
-dup 110 /n put
-dup 111 /o put
-dup 112 /p put
-dup 113 /q put
-dup 114 /r put
-dup 115 /s put
-dup 116 /t put
-dup 117 /u put
-dup 118 /v put
-dup 119 /w put
-dup 120 /x put
-dup 121 /y put
-dup 122 /z put
-dup 123 /braceleft put
-dup 124 /bar put
-dup 125 /braceright put
-dup 126 /asciitilde put
-dup 127 /dummyd put
-dup 128 /Euro put
-dup 129 /integral put
-dup 130 /quotesinglbase put
-dup 131 /florin put
-dup 132 /quotedblbase put
-dup 133 /ellipsis put
-dup 134 /dagger put
-dup 135 /daggerdbl put
-dup 136 /circumflex put
-dup 137 /perthousand put
-dup 138 /Scaron put
-dup 139 /guilsinglleft put
-dup 140 /OE put
-dup 141 /Omega put
-dup 142 /radical put
-dup 143 /approxequal put
-dup 144 /dummye put
-dup 145 /dummyf put
-dup 146 /dummyg put
-dup 147 /quotedblleft put
-dup 148 /quotedblright put
-dup 149 /bullet put
-dup 150 /endash put
-dup 151 /emdash put
-dup 152 /tilde put
-dup 153 /trademark put
-dup 154 /scaron put
-dup 155 /guilsinglright put
-dup 156 /oe put
-dup 157 /Delta put
-dup 158 /lozenge put
-dup 159 /Ydieresis put
-dup 160 /dummyh put
-dup 161 /exclamdown put
-dup 162 /cent put
-dup 163 /sterling put
-dup 164 /currency put
-dup 165 /yen put
-dup 166 /brokenbar put
-dup 167 /section put
-dup 168 /dieresis put
-dup 169 /copyright put
-dup 170 /ordfeminine put
-dup 171 /guillemotleft put
-dup 172 /logicalnot put
-dup 173 /oldhy put
-dup 174 /registered put
-dup 175 /macron put
-dup 176 /degree put
-dup 177 /plusminus put
-dup 178 /twosuperior put
-dup 179 /threesuperior put
-dup 180 /acute put
-dup 181 /mu put
-dup 182 /paragraph put
-dup 183 /periodcentered put
-dup 184 /cedilla put
-dup 185 /onesuperior put
-dup 186 /ordmasculine put
-dup 187 /guillemotright put
-dup 188 /onequarter put
-dup 189 /onehalf put
-dup 190 /threequarters put
-dup 191 /questiondown put
-dup 192 /Agrave put
-dup 193 /Aacute put
-dup 194 /Acircumflex put
-dup 195 /Atilde put
-dup 196 /Adieresis put
-dup 197 /Aring put
-dup 198 /AE put
-dup 199 /Ccedilla put
-dup 200 /Egrave put
-dup 201 /Eacute put
-dup 202 /Ecircumflex put
-dup 203 /Edieresis put
-dup 204 /Igrave put
-dup 205 /Iacute put
-dup 206 /Icircumflex put
-dup 207 /Idieresis put
-dup 208 /Eth put
-dup 209 /Ntilde put
-dup 210 /Ograve put
-dup 211 /Oacute put
-dup 212 /Ocircumflex put
-dup 213 /Otilde put
-dup 214 /Odieresis put
-dup 215 /multiply put
-dup 216 /Oslash put
-dup 217 /Ugrave put
-dup 218 /Uacute put
-dup 219 /Ucircumflex put
-dup 220 /Udieresis put
-dup 221 /Yacute put
-dup 222 /Thorn put
-dup 223 /germandbls put
-dup 224 /agrave put
-dup 225 /aacute put
-dup 226 /acircumflex put
-dup 227 /atilde put
-dup 228 /adieresis put
-dup 229 /aring put
-dup 230 /ae put
-dup 231 /ccedilla put
-dup 232 /egrave put
-dup 233 /eacute put
-dup 234 /ecircumflex put
-dup 235 /edieresis put
-dup 236 /igrave put
-dup 237 /iacute put
-dup 238 /icircumflex put
-dup 239 /idieresis put
-dup 240 /eth put
-dup 241 /ntilde put
-dup 242 /ograve put
-dup 243 /oacute put
-dup 244 /ocircumflex put
-dup 245 /otilde put
-dup 246 /odieresis put
-dup 247 /divide put
-dup 248 /oslash put
-dup 249 /ugrave put
-dup 250 /uacute put
-dup 251 /ucircumflex put
-dup 252 /udieresis put
-dup 253 /yacute put
-dup 254 /thorn put
-dup 255 /ydieresis put
- readonly def
+/Encoding 256 array
+0 1 255 {1 index exch/.notdef put} for
+dup 0/dummya put
+dup 1/dotaccent put
+dup 2/fi put
+dup 3/fl put
+dup 4/fraction put
+dup 5/hungarumlaut put
+dup 6/Lslash put
+dup 7/lslash put
+dup 8/ogonek put
+dup 9/ring put
+dup 10/dummyb put
+dup 11/breve put
+dup 12/minus put
+dup 13/dummyc put
+dup 14/Zcaron put
+dup 15/zcaron put
+dup 16/caron put
+dup 17/dotlessi put
+dup 18/dotlessj put
+dup 19/ff put
+dup 20/ffi put
+dup 21/ffl put
+dup 22/notequal put
+dup 23/infinity put
+dup 24/lessequal put
+dup 25/greaterequal put
+dup 26/partialdiff put
+dup 27/summation put
+dup 28/product put
+dup 29/pi put
+dup 30/grave put
+dup 31/quotesingle put
+dup 32/space put
+dup 33/exclam put
+dup 34/quotedbl put
+dup 35/numbersign put
+dup 36/dollar put
+dup 37/percent put
+dup 38/ampersand put
+dup 39/quoteright put
+dup 40/parenleft put
+dup 41/parenright put
+dup 42/asterisk put
+dup 43/plus put
+dup 44/comma put
+dup 45/hyphen put
+dup 46/period put
+dup 47/slash put
+dup 48/zero put
+dup 49/one put
+dup 50/two put
+dup 51/three put
+dup 52/four put
+dup 53/five put
+dup 54/six put
+dup 55/seven put
+dup 56/eight put
+dup 57/nine put
+dup 58/colon put
+dup 59/semicolon put
+dup 60/less put
+dup 61/equal put
+dup 62/greater put
+dup 63/question put
+dup 64/at put
+dup 65/A put
+dup 66/B put
+dup 67/C put
+dup 68/D put
+dup 69/E put
+dup 70/F put
+dup 71/G put
+dup 72/H put
+dup 73/I put
+dup 74/J put
+dup 75/K put
+dup 76/L put
+dup 77/M put
+dup 78/N put
+dup 79/O put
+dup 80/P put
+dup 81/Q put
+dup 82/R put
+dup 83/S put
+dup 84/T put
+dup 85/U put
+dup 86/V put
+dup 87/W put
+dup 88/X put
+dup 89/Y put
+dup 90/Z put
+dup 91/bracketleft put
+dup 92/backslash put
+dup 93/bracketright put
+dup 94/asciicircum put
+dup 95/underscore put
+dup 96/quoteleft put
+dup 97/a put
+dup 98/b put
+dup 99/c put
+dup 100/d put
+dup 101/e put
+dup 102/f put
+dup 103/g put
+dup 104/h put
+dup 105/i put
+dup 106/j put
+dup 107/k put
+dup 108/l put
+dup 109/m put
+dup 110/n put
+dup 111/o put
+dup 112/p put
+dup 113/q put
+dup 114/r put
+dup 115/s put
+dup 116/t put
+dup 117/u put
+dup 118/v put
+dup 119/w put
+dup 120/x put
+dup 121/y put
+dup 122/z put
+dup 123/braceleft put
+dup 124/bar put
+dup 125/braceright put
+dup 126/asciitilde put
+dup 127/dummyd put
+dup 128/Euro put
+dup 129/integral put
+dup 130/quotesinglbase put
+dup 131/florin put
+dup 132/quotedblbase put
+dup 133/ellipsis put
+dup 134/dagger put
+dup 135/daggerdbl put
+dup 136/circumflex put
+dup 137/perthousand put
+dup 138/Scaron put
+dup 139/guilsinglleft put
+dup 140/OE put
+dup 141/Omega put
+dup 142/radical put
+dup 143/approxequal put
+dup 144/dummye put
+dup 145/dummyf put
+dup 146/dummyg put
+dup 147/quotedblleft put
+dup 148/quotedblright put
+dup 149/bullet put
+dup 150/endash put
+dup 151/emdash put
+dup 152/tilde put
+dup 153/trademark put
+dup 154/scaron put
+dup 155/guilsinglright put
+dup 156/oe put
+dup 157/Delta put
+dup 158/lozenge put
+dup 159/Ydieresis put
+dup 160/dummyh put
+dup 161/exclamdown put
+dup 162/cent put
+dup 163/sterling put
+dup 164/currency put
+dup 165/yen put
+dup 166/brokenbar put
+dup 167/section put
+dup 168/dieresis put
+dup 169/copyright put
+dup 170/ordfeminine put
+dup 171/guillemotleft put
+dup 172/logicalnot put
+dup 173/oldhy put
+dup 174/registered put
+dup 175/macron put
+dup 176/degree put
+dup 177/plusminus put
+dup 178/twosuperior put
+dup 179/threesuperior put
+dup 180/acute put
+dup 181/mu put
+dup 182/paragraph put
+dup 183/periodcentered put
+dup 184/cedilla put
+dup 185/onesuperior put
+dup 186/ordmasculine put
+dup 187/guillemotright put
+dup 188/onequarter put
+dup 189/onehalf put
+dup 190/threequarters put
+dup 191/questiondown put
+dup 192/Agrave put
+dup 193/Aacute put
+dup 194/Acircumflex put
+dup 195/Atilde put
+dup 196/Adieresis put
+dup 197/Aring put
+dup 198/AE put
+dup 199/Ccedilla put
+dup 200/Egrave put
+dup 201/Eacute put
+dup 202/Ecircumflex put
+dup 203/Edieresis put
+dup 204/Igrave put
+dup 205/Iacute put
+dup 206/Icircumflex put
+dup 207/Idieresis put
+dup 208/Eth put
+dup 209/Ntilde put
+dup 210/Ograve put
+dup 211/Oacute put
+dup 212/Ocircumflex put
+dup 213/Otilde put
+dup 214/Odieresis put
+dup 215/multiply put
+dup 216/Oslash put
+dup 217/Ugrave put
+dup 218/Uacute put
+dup 219/Ucircumflex put
+dup 220/Udieresis put
+dup 221/Yacute put
+dup 222/Thorn put
+dup 223/germandbls put
+dup 224/agrave put
+dup 225/aacute put
+dup 226/acircumflex put
+dup 227/atilde put
+dup 228/adieresis put
+dup 229/aring put
+dup 230/ae put
+dup 231/ccedilla put
+dup 232/egrave put
+dup 233/eacute put
+dup 234/ecircumflex put
+dup 235/edieresis put
+dup 236/igrave put
+dup 237/iacute put
+dup 238/icircumflex put
+dup 239/idieresis put
+dup 240/eth put
+dup 241/ntilde put
+dup 242/ograve put
+dup 243/oacute put
+dup 244/ocircumflex put
+dup 245/otilde put
+dup 246/odieresis put
+dup 247/divide put
+dup 248/oslash put
+dup 249/ugrave put
+dup 250/uacute put
+dup 251/ucircumflex put
+dup 252/udieresis put
+dup 253/yacute put
+dup 254/thorn put
+dup 255/ydieresis put
+readonly def

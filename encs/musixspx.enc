@@ -1,5 +1,5 @@
 /Encoding 256 array
- 0 1 255 { 1 index exch /.notdef put} for
+0 1 255 { 1 index exch/.notdef put} for
 dup 0/grave put
 dup 1/acute put
 dup 2/circumflex put
@@ -244,4 +244,16 @@ dup 240/eth put
 dup 241/ntilde put
 dup 242/ograve put
 dup 243/oacute put
+dup 244/ocircumflex put
+dup 245/otilde put
+dup 246/odieresis put
+dup 247/oe put
+dup 248/oslash put
+dup 249/ugrave put
+dup 250/uacute put
+dup 251/ucircumflex put
+dup 252/udieresis put
+dup 253/yacute put
+dup 254/thorn put
+dup 255/germandbls put
 readonly def

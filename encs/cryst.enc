@@ -1,5 +1,5 @@
 /Encoding 256 array
- 0 1 255 { 1 index exch /.notdef put} for
+0 1 255 { 1 index exch/.notdef put} for
 dup 0/uni0000 put
 dup 2/uniFB01 put
 dup 3/uniFB02 put
@@ -12,6 +12,7 @@ dup 9/ring put
 dup 10/uni000A put
 dup 12/minus put
 dup 15/zcaron put
+dup 19/uniFB00 put
 dup 20/uniFB03 put
 dup 21/uniFB04 put
 dup 22/notequal put
@@ -38,6 +39,10 @@ dup 47/slash put
 dup 48/zero put
 dup 49/one put
 dup 50/two put
+dup 51/three put
+dup 52/four put
+dup 53/five put
+dup 54/six put
 dup 55/seven put
 dup 57/nine put
 dup 58/colon put
@@ -62,10 +67,12 @@ dup 85/U put
 dup 87/W put
 dup 88/X put
 dup 89/Y put
+dup 91/bracketleft put
 dup 95/underscore put
 dup 97/a put
 dup 98/b put
 dup 99/c put
+dup 100/d put
 dup 102/f put
 dup 103/g put
 dup 104/h put
@@ -73,6 +80,7 @@ dup 105/i put
 dup 107/k put
 dup 108/l put
 dup 109/m put
+dup 111/o put
 dup 112/p put
 dup 113/q put
 dup 120/x put
@@ -104,6 +112,7 @@ dup 155/guilsinglright put
 dup 157/uni2206 put
 dup 158/lozenge put
 dup 159/Ydieresis put
+dup 165/yen put
 dup 175/macron put
 dup 177/plusminus put
 dup 178/uni00B2 put
@@ -119,6 +128,7 @@ dup 199/Ccedilla put
 dup 202/Ecircumflex put
 dup 203/Edieresis put
 dup 204/Igrave put
+dup 208/Eth put
 dup 210/Ograve put
 dup 212/Ocircumflex put
 dup 213/Otilde put

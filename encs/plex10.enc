@@ -1,5 +1,5 @@
 /Encoding 256 array
-0 1 255 {1 index exch /.notdef put} for
+0 1 255 {1 index exch/.notdef put} for
 dup 32/space put
 dup 33/parenleftbig put
 dup 34/parenrightbig put
@@ -89,4 +89,45 @@ dup 117/intersectiontext put
 dup 118/unionmultitext put
 dup 119/logicalandtext put
 dup 120/logicalortext put
+dup 160/nbspace put
+dup 216/summationdisplay put
+dup 217/productdisplay put
+dup 218/integraldisplay put
+dup 219/uniondisplay put
+dup 220/intersectiondisplay put
+dup 221/unionmultidisplay put
+dup 222/logicalanddisplay put
+dup 223/logicalordisplay put
+dup 224/coproducttext put
+dup 225/coproductdisplay put
+dup 226/hatwide put
+dup 227/hatwider put
+dup 228/hatwidest put
+dup 229/tildewide put
+dup 230/tildewider put
+dup 231/tildewidest put
+dup 232/bracketleftBig put
+dup 233/bracketrightBig put
+dup 234/floorleftBig put
+dup 235/floorrightBig put
+dup 236/ceilingleftBig put
+dup 237/ceilingrightBig put
+dup 238/braceleftBig put
+dup 239/bracerightBig put
+dup 240/radicalbig put
+dup 241/radicalBig put
+dup 242/radicalbigg put
+dup 243/radicalBigg put
+dup 244/radicalbt put
+dup 245/radicalvertex put
+dup 246/radicaltp put
+dup 247/arrowvertexdbl put
+dup 248/arrowtp put
+dup 249/arrowbt put
+dup 250/bracehtipdownleft put
+dup 251/bracehtipdownright put
+dup 252/bracehtipupleft put
+dup 253/bracehtipupright put
+dup 254/arrowdbltp put
+dup 255/arrowdblbt put
 readonly def

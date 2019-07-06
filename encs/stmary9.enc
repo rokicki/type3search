@@ -1,131 +1,131 @@
 /Encoding 256 array
-0 1 255 {1 index exch /.notdef put } for
-dup 0 /shortleftarrow put
-dup 1 /shortrightarrow put
-dup 2 /shortuparrow put
-dup 3 /shortdownarrow put
-dup 4 /Yup put
-dup 5 /Ydown put
-dup 6 /Yleft put
-dup 7 /Yright put
-dup 8 /varcurlyvee put
-dup 9 /varcurlywedge put
-dup 10 /minuso put
-dup 11 /baro put
-dup 12 /sslash put
-dup 13 /bbslash put
-dup 14 /moo put
-dup 15 /varotimes put
-dup 16 /varoast put
-dup 17 /varobar put
-dup 18 /varodot put
-dup 19 /varoslash put
-dup 20 /varobslash put
-dup 21 /varocircle put
-dup 22 /varoplus put
-dup 23 /varominus put
-dup 24 /boxast put
-dup 25 /boxbar put
-dup 26 /boxdot put
-dup 27 /boxslash put
-dup 28 /boxbslash put
-dup 29 /boxcircle put
-dup 30 /boxbox put
-dup 31 /boxempty put
-dup 32 /lightning put
-dup 33 /merge put
-dup 34 /vartimes put
-dup 35 /fatsemi put
-dup 36 /ssearrow put
-dup 37 /curlywedgeuparrow put
-dup 38 /sswarrow put
-dup 39 /curlywedgedownarrow put
-dup 40 /fatslash put
-dup 41 /fatbslash put
-dup 42 /lbag put
-dup 43 /rbag put
-dup 44 /varbigcirc put
-dup 45 /leftrightarroweq put
-dup 46 /curlyveedownarrow put
-dup 47 /curlyveeuparrow put
-dup 48 /nnwarrow put
-dup 49 /nnearrow put
-dup 50 /leftslice put
-dup 51 /rightslice put
-dup 52 /varolessthan put
-dup 53 /varogreaterthan put
-dup 54 /varovee put
-dup 55 /varowedge put
-dup 56 /talloblong put
-dup 57 /interleave put
-dup 58 /obar put
-dup 59 /obslash put
-dup 60 /olessthan put
-dup 61 /ogreaterthan put
-dup 62 /ovee put
-dup 63 /owedge put
-dup 64 /oblong put
-dup 65 /inplus put
-dup 66 /niplus put
-dup 67 /nplus put
-dup 68 /subsetplus put
-dup 69 /supsetplus put
-dup 70 /subsetpluseq put
-dup 71 /supsetpluseq put
-dup 72 /Lbag put
-dup 73 /Rbag put
-dup 74 /llbracket put
-dup 75 /rrbracket put
-dup 76 /llparenthesis put
-dup 77 /rrparenthesis put
-dup 78 /binampersand put
-dup 79 /bindnasrepma put
-dup 80 /trianglelefteqslant put
-dup 81 /trianglerighteqslant put
-dup 82 /ntrianglelefteqslant put
-dup 83 /ntrianglerighteqslant put
-dup 84 /llfloor put
-dup 85 /rrfloor put
-dup 86 /llceil put
-dup 87 /rrceil put
-dup 88 /arrownot put
-dup 89 /Arrownot put
-dup 90 /Mapstochar put
-dup 91 /mapsfromchar put
-dup 92 /Mapsfromchar put
-dup 93 /leftrightarrowtriangle put
-dup 94 /leftarrowtriangle put
-dup 95 /rightarrowtriangle put
-dup 96 /bigtriangledown put
-dup 97 /bigtriangleup put
-dup 98 /bigcurlyvee put
-dup 99 /bigcurlywedge put
-dup 100 /bigsqcap put
-dup 101 /bigbox put
-dup 102 /bigparallel put
-dup 103 /biginterleave put
-dup 104 /hugetriangledown put
-dup 105 /hugetriangleup put
-dup 106 /hugecurlyvee put
-dup 107 /hugecurlywedge put
-dup 108 /hugesqcap put
-dup 109 /hugebox put
-dup 110 /hugeparallel put
-dup 111 /hugeinterleave put
-dup 112 /hugenplus put
-dup 113 /largellbracket put
-dup 114 /Largellbracket put
-dup 115 /LARGEllbracket put
-dup 116 /hugellbracket put
-dup 117 /Hugellbrackettop put
-dup 118 /Hugellbracketbot put
-dup 119 /Hugellbracketex put
-dup 120 /Hugenplus put
-dup 121 /largerrbracket put
-dup 122 /Largerrbracket put
-dup 123 /LARGErrbracket put
-dup 124 /hugerrbracket put
-dup 125 /Hugerrbrackettop put
-dup 126 /Hugerrbracketbot put
-dup 127 /Hugerrbracketex put
+0 1 255 {1 index exch/.notdef put } for
+dup 0/shortleftarrow put
+dup 1/shortrightarrow put
+dup 2/shortuparrow put
+dup 3/shortdownarrow put
+dup 4/Yup put
+dup 5/Ydown put
+dup 6/Yleft put
+dup 7/Yright put
+dup 8/varcurlyvee put
+dup 9/varcurlywedge put
+dup 10/minuso put
+dup 11/baro put
+dup 12/sslash put
+dup 13/bbslash put
+dup 14/moo put
+dup 15/varotimes put
+dup 16/varoast put
+dup 17/varobar put
+dup 18/varodot put
+dup 19/varoslash put
+dup 20/varobslash put
+dup 21/varocircle put
+dup 22/varoplus put
+dup 23/varominus put
+dup 24/boxast put
+dup 25/boxbar put
+dup 26/boxdot put
+dup 27/boxslash put
+dup 28/boxbslash put
+dup 29/boxcircle put
+dup 30/boxbox put
+dup 31/boxempty put
+dup 32/lightning put
+dup 33/merge put
+dup 34/vartimes put
+dup 35/fatsemi put
+dup 36/ssearrow put
+dup 37/curlywedgeuparrow put
+dup 38/sswarrow put
+dup 39/curlywedgedownarrow put
+dup 40/fatslash put
+dup 41/fatbslash put
+dup 42/lbag put
+dup 43/rbag put
+dup 44/varbigcirc put
+dup 45/leftrightarroweq put
+dup 46/curlyveedownarrow put
+dup 47/curlyveeuparrow put
+dup 48/nnwarrow put
+dup 49/nnearrow put
+dup 50/leftslice put
+dup 51/rightslice put
+dup 52/varolessthan put
+dup 53/varogreaterthan put
+dup 54/varovee put
+dup 55/varowedge put
+dup 56/talloblong put
+dup 57/interleave put
+dup 58/obar put
+dup 59/obslash put
+dup 60/olessthan put
+dup 61/ogreaterthan put
+dup 62/ovee put
+dup 63/owedge put
+dup 64/oblong put
+dup 65/inplus put
+dup 66/niplus put
+dup 67/nplus put
+dup 68/subsetplus put
+dup 69/supsetplus put
+dup 70/subsetpluseq put
+dup 71/supsetpluseq put
+dup 72/Lbag put
+dup 73/Rbag put
+dup 74/llbracket put
+dup 75/rrbracket put
+dup 76/llparenthesis put
+dup 77/rrparenthesis put
+dup 78/binampersand put
+dup 79/bindnasrepma put
+dup 80/trianglelefteqslant put
+dup 81/trianglerighteqslant put
+dup 82/ntrianglelefteqslant put
+dup 83/ntrianglerighteqslant put
+dup 84/llfloor put
+dup 85/rrfloor put
+dup 86/llceil put
+dup 87/rrceil put
+dup 88/arrownot put
+dup 89/Arrownot put
+dup 90/Mapstochar put
+dup 91/mapsfromchar put
+dup 92/Mapsfromchar put
+dup 93/leftrightarrowtriangle put
+dup 94/leftarrowtriangle put
+dup 95/rightarrowtriangle put
+dup 96/bigtriangledown put
+dup 97/bigtriangleup put
+dup 98/bigcurlyvee put
+dup 99/bigcurlywedge put
+dup 100/bigsqcap put
+dup 101/bigbox put
+dup 102/bigparallel put
+dup 103/biginterleave put
+dup 104/hugetriangledown put
+dup 105/hugetriangleup put
+dup 106/hugecurlyvee put
+dup 107/hugecurlywedge put
+dup 108/hugesqcap put
+dup 109/hugebox put
+dup 110/hugeparallel put
+dup 111/hugeinterleave put
+dup 112/hugenplus put
+dup 113/largellbracket put
+dup 114/Largellbracket put
+dup 115/LARGEllbracket put
+dup 116/hugellbracket put
+dup 117/Hugellbrackettop put
+dup 118/Hugellbracketbot put
+dup 119/Hugellbracketex put
+dup 120/Hugenplus put
+dup 121/largerrbracket put
+dup 122/Largerrbracket put
+dup 123/LARGErrbracket put
+dup 124/hugerrbracket put
+dup 125/Hugerrbrackettop put
+dup 126/Hugerrbracketbot put
+dup 127/Hugerrbracketex put
 readonly def

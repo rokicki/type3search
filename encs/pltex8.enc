@@ -1,5 +1,5 @@
 /Encoding 256 array
-0 1 255 {1 index exch /.notdef put} for
+0 1 255 {1 index exch/.notdef put} for
 dup 32/space put
 dup 33/exclam put
 dup 34/quotedbl put
@@ -92,4 +92,41 @@ dup 123/braceleft put
 dup 124/bar put
 dup 125/braceright put
 dup 126/asciitilde put
+dup 145/quoteleft put
+dup 146/quoteright put
+dup 160/nbspace put
+dup 172/logicalnot put
+dup 173/minus put
+dup 177/plusminus put
+dup 225/dotmath put
+dup 226/arrowdown put
+dup 227/alpha put
+dup 228/beta put
+dup 229/logicaland put
+dup 230/element put
+dup 231/pi put
+dup 232/lambda put
+dup 233/gamma put
+dup 234/delta put
+dup 235/arrowup put
+dup 236/circleplus put
+dup 237/infinity put
+dup 238/partialdiff put
+dup 239/propersubset put
+dup 240/propersuperset put
+dup 241/intersection put
+dup 242/union put
+dup 243/universal put
+dup 244/existential put
+dup 245/circlemultiply put
+dup 246/arrowboth put
+dup 247/arrowleft put
+dup 248/arrowright put
+dup 249/notequal put
+dup 250/lozenge put
+dup 251/lessequal put
+dup 252/greaterequal put
+dup 253/equivalence put
+dup 254/logicalor put
+dup 255/integral put
 readonly def

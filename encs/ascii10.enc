@@ -1,7 +1,7 @@
 /Encoding 256 array
-0 1 255 {1 index exch /.notdef put } for
-dup 65 /A put
-dup 67 /C put
-dup 73 /I put
-dup 83 /S put
+0 1 255 {1 index exch/.notdef put } for
+dup 65/A put
+dup 67/C put
+dup 73/I put
+dup 83/S put
 readonly def

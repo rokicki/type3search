@@ -1,5 +1,5 @@
 /Encoding 256 array
- 0 1 255 { 1 index exch /.notdef put} for
+0 1 255 { 1 index exch/.notdef put} for
 dup 0/squaredot put
 dup 1/squareplus put
 dup 2/squaremultiply put

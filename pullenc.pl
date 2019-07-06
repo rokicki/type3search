@@ -132,7 +132,9 @@ for $font (@fontfilelist) {
    $nonadobeglyph = 0 ;
    @missingglyphs = () ;
    $killit = 0 ;
-   while (<F>) {
+   undef $/ ;
+   @lines = split /[\n\r]+/, <F> ;
+   for (@lines) {
       next if /^ *%/ ;
       if (/Encoding/) {
          $keep++ ;
@@ -140,7 +142,11 @@ for $font (@fontfilelist) {
       # skip letters not in the tfm file
       next if $keep && /dup (\d+)/ && @exist && !$exist[$1] ;
       if ($keep) {
-         print G $_ ;
+         s,^  *,, ;
+         s,  *$,, ;
+         s, /,/,g ;
+         s,  *, ,g ;
+         print G "$_\n" ;
          last if /readonly def/ ;
          next if /Encoding *256/ || /0 1 255/ ;
          last if m,Encoding StandardEncoding def, ;
@@ -152,6 +158,7 @@ for $font (@fontfilelist) {
             last ;
          }
          $glyphname = $2 ;
+         $code = $1 ;
          if (defined($unicode{$glyphname})) {
             $adobeglyph++ ;
          } else {

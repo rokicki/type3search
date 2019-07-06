@@ -1,5 +1,5 @@
 /Encoding 256 array
- 0 1 255 { 1 index exch /.notdef put} for
+0 1 255 { 1 index exch/.notdef put} for
 dup 0/grave put
 dup 1/acute put
 dup 2/circumflex put
@@ -116,6 +116,7 @@ dup 123/braceleft put
 dup 124/bar put
 dup 125/braceright put
 dup 126/asciitilde put
+dup 127/hyphen put
 dup 128/Abreve put
 dup 129/Aogonek put
 dup 130/Cacute put
