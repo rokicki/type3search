@@ -109,6 +109,8 @@ Can we explain any differences?
 
 Should we consider the memory usage of the new setup?
 
+Write up docs and TUG presentation.
+
 # Phase two implementation
 
 After finishing the initial implementation, and discussing it with
