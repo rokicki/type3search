@@ -106,16 +106,49 @@ print "Saw $files PFB files with matching METAFONT source.\n" ;
 print "Saw $tfmfiles TFM files for these.\n" ;
 #
 #
+my $linepos = 0 ;
+my $lastwasspecial = 1 ;
+my $maxline = 76 ;
+sub endofline {
+   print G "\n" ;
+   $lastwasspecial = 1 ;
+   $linepos = 0 ;
+}
+sub cmdout {
+   my $s = shift ;
+   endofline() if $linepos + length($s) > $maxline ;
+   if (!$lastwasspecial) {
+      print G " " ;
+      $linepos++ ;
+   }
+   print G $s ;
+   $linepos += length($s) ;
+   $lastwasspecial = 0 ;
+}
+sub specialout {
+   my $s = shift ;
+   endofline() if $linepos + length($s) > $maxline ;
+   print G $s ;
+   $linepos += length($s) ;
+   $lastwasspecial = 1 ;
+}
+sub nameout {
+   my $s = shift ;
+   $lastwasspecial = 1 ;
+   cmdout($s) ;
+}
 #
 @fontfilelist = sort { $a cmp $b } values %pfbseen ;
 $seq = 0 ;
 $cnt = @fontfilelist ;
+$oldslash = $/ ;
 for $font (@fontfilelist) {
    $fn = $font ;
    $fn =~ s,.*/,, ;
    $fn =~ s,.pfb,, ;
    $seq++ ;
-   @exist = () ;
+   @exist = (0) x 256 ;
+   $/ = $oldslash ;
    open F, "tftopl $fn |" or die "Can't run tftopl" ;
    while (<F>) {
       if (/^\(CHARACTER O (\d+)/) {
@@ -126,39 +159,25 @@ for $font (@fontfilelist) {
    }
    close F ;
    open F, "$font" or die "Can't read $font" ;
-   open G, ">encs/$fn.enc" or die "Can't write $font encoding" ;
-   $keep = 0 ;
    $adobeglyph = 0 ;
    $nonadobeglyph = 0 ;
    @missingglyphs = () ;
    $killit = 0 ;
    undef $/ ;
    @lines = split /[\n\r]+/, <F> ;
+   @actualenc = ('/.notdef') x 256 ;
+   $chars = 0 ;
+   $isstandard = 0 ;
    for (@lines) {
       next if /^ *%/ ;
-      if (/Encoding/) {
-         $keep++ ;
-      }
       # skip letters not in the tfm file
-      next if $keep && /dup (\d+)/ && @exist && !$exist[$1] ;
-      if ($keep) {
-         s,^  *,, ;
-         s,  *$,, ;
-         s, /,/,g ;
-         s,  *, ,g ;
-         print G "$_\n" ;
-         last if /readonly def/ ;
-         next if /Encoding *256/ || /0 1 255/ ;
-         last if m,Encoding StandardEncoding def, ;
-         chomp ;
-         if (!m,dup (\d+) */(\S+) put,) {
-            $badpart = substr($badpart, 0, 30) ;
-            print "Bad line in $font; skipping it [$badpart] [$font]\n" ;
-            $killit++ ;
-            last ;
-         }
+      next if /dup  *(\d+)/ && @exist && !$exist[$1] ;
+      $isstandard++ if /Encoding/ && /StandardEncoding/ ;
+      if (m,dup  *(\d+) *(/\S+)  *put,) {
          $glyphname = $2 ;
          $code = $1 ;
+         $actualenc[$code] = $glyphname ;
+         $chars++ ;
          if (defined($unicode{$glyphname})) {
             $adobeglyph++ ;
          } else {
@@ -168,11 +187,50 @@ for $font (@fontfilelist) {
       }
    }
    close F ;
-   close G ;
-   if ($killit) {
-      unlink("encs/$fn.enc") ;
-      next ;
+   if ($isstandard) {
+      die "Standard encoding, but also saw defs in $font" if $chars ;
+   } else {
+      if ($chars == 0) {
+         print "Not finding anything useful for $font\n" ;
+         next ;
+      }
+      @badchars = () ;
+      for ($i=0; $i<@exist; $i++) {
+         if ($exist[$i] && $actualenc[$i] eq '/.notdef') {
+            push @badchars, $i ;
+         }
+      }
+      if (@badchars) {
+         print "Font $font chars in TFM but not in PFB: [@badchars]\n" ;
+      }
    }
+   $/ = $oldslash ;
+   open G, ">encs/$fn.enc" or die "Can't write $font encoding" ;
+   $linepos = 0 ;
+   if ($isstandard) {
+      print G "StandardEncoding\n" ;
+   } else {
+      specialout('[') ;
+      $i = 0 ;
+      while ($i < 256) {
+         $j = $i ;
+         $j++ while $j < 256 && $actualenc[$j] eq '/.notdef' ;
+         if ($j-$i > 2) {
+            cmdout($j-$i) ;
+            specialout('{') ;
+            nameout('/.notdef') ;
+            specialout('}') ;
+            cmdout('repeat') ;
+            $i = $j ;
+         } else {
+            nameout($actualenc[$i]) ;
+            $i++ ;
+         }
+      }
+      specialout(']') ;
+      endofline() ;
+   }
+   close G ;
    my $r = `md5 encs/$fn.enc` ;
    chomp $r ;
    @f = split " ", $r ;
