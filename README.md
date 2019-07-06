@@ -78,6 +78,11 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
+Some fonts like plr10 apparently pick up a new encoding vector,
+probably in a map file somewhere.  The pullenc script needs to
+use that instead of what it finds in the PFB file, if I can figure
+out the search order for those.
+
 Make dvips-all.enc shorter by packing the encodings as dvips
 would write them.
 
