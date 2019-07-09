@@ -17,9 +17,11 @@ my $count = scalar keys %unicode ;
 #   Find fonts that appear to have both mf and pfb files.  Match by name
 #   but keep track of directory.
 #
+$mfread = 0 ;
 open F, "find /usr/local/texlive/2016/texmf-dist/fonts/source -name '*.mf' |" or die "Can't fork" ;
 $ignorethese{$_}++ for qw(test bzrsetup local ligature gamma) ;
 while (<F>) {
+   $mfread++ ;
    chomp ;
    $fullname = $_ ;
    $basename = $fullname ;
@@ -31,10 +33,12 @@ while (<F>) {
    }
    $seen{$basename} = $fullname ;
 }
+print "Saw $mfread METAFONT files.\n" ;
 #
 #   Find the built psfonts.map file and read it.  Only keep lines that match
 #   things we saw MF source for.
 #
+my $matchingpsfonts = 0 ;
 open F, "/usr/local/texlive/2016/texmf-dist/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
 while (<F>) {
    next if /^\s*%/ ;
@@ -43,6 +47,7 @@ while (<F>) {
    /<([-_a-zA-Z0-9]+).pf[ab]/ or warn $_ ;
    $fontfile{$f[0]} = $1 ;
    $needpfbfile{$1}++ ;
+   $matchingpsfonts++ ;
    if (/reencode/i) {
       /<\[?([-_a-zA-Z0-9]+).enc/ or warn $_ ;
       $encfile{$f[0]} = $1 ;
@@ -50,9 +55,11 @@ while (<F>) {
    }
 }
 close F ;
+print "Saw $matchingpsfonts matching PostScript fonts.\n" ;
 #
 #   Now find encoding files.  For now we only store their location.
 #
+my $encfilesread = 0 ;
 open F, "find /usr/local/texlive/2016/texmf-dist/fonts -name '*.enc' |" or die "Can't fork" ;
 while (<F>) {
    chomp ;
@@ -64,6 +71,7 @@ while (<F>) {
       die "Duplicated encoding file?" if $foundencfile{$basename} ;
       $foundencfile{$basename}++ ;
       $encfullpath{$basename} = $fullname ;
+      $encfilesread++ ;
       open G, "$fullname" or die "Can't read encoding file $fullname" ;
       @tokens = () ;
       # tokenize into an array
@@ -84,6 +92,7 @@ while (<F>) {
    }
 }
 close F ;
+print "Read $encfilesread encoding files.\n" ;
 #
 #   Did we find all needed encoding files?
 #
@@ -96,6 +105,7 @@ for (keys %needencfile) {
 #   and the former have some issue with missing TFM files, and in general
 #   we just don't want to do all the fonts.  We also drop the cmcyr fonts.
 #
+my $pfbfilesseen = 0 ;
 open F, "find /usr/local/texlive/2016/texmf-dist/fonts/ -name '*.pfb' -o -name '*.pfa' |" or die "Can't fork" ;
 while (<F>) {
 #  next if /cbfonts/ ;
@@ -107,9 +117,11 @@ while (<F>) {
    $basename =~ s,.*/,, ;
    $basename =~ s,.pf[ab]$,, ;
    next if !$needpfbfile{$basename} ;
+   $pfbfilesseen++ ;
    die "Double seen PFB file?" if defined($pfbseen{$basename}) ;
    $pfbseen{$basename} = $fullname ;
 }
+print "Saw $pfbfilesseen PFB or PFA files.\n" ;
 my $files = scalar keys %pfbseen ;
 #
 #   Instead of pfb files we should read afm files.  We tried this, but we
@@ -146,6 +158,7 @@ if (0) {
 #
 #   Make sure we have tfm files for all of these.
 #
+my $tfmfilesseen = 0 ;
 open F, "find /usr/local/texlive/2016/texmf-dist/fonts/ -name '*.tfm' |" or die "Can't fork" ;
 while (<F>) {
    chomp ;
@@ -154,6 +167,7 @@ while (<F>) {
    $basename =~ s,.*/,, ;
    $basename =~ s,.tfm$,, ;
    next if !defined($fontfile{$basename}) ;
+   $tfmfilesseen++ ;
    $tfmseen{$basename}++ ;
 }
 my @deleteme = () ;
@@ -165,6 +179,7 @@ for (keys %fontfile) {
 for (@deleteme) {
    delete $fontfile{$_} ;
 }
+print "Saw $tfmfilesseen TFM files; skipping ", (scalar @deleteme), " possibly good font files.\n" ;
 my $linepos = 0 ;
 my $lastwasspecial = 1 ;
 my $maxline = 76 ;
@@ -199,7 +214,9 @@ sub nameout {
 #
 $seq = 0 ;
 $oldslash = $/ ;
+my $pfbfilesread = 0 ;
 for $font (keys %needpfbfile) {
+   $pfbfilesread++ ;
    open F, "$pfbseen{$font}" or die "Can't read $font ($pfbseen{$font})" ;
    undef $/ ;
    @lines = split /[\n\r]+/, <F> ;
@@ -211,14 +228,14 @@ for $font (keys %needpfbfile) {
       # this shows up in a number of PFB files to remap characters.
       if (/dup dup 161 10 getinterval 0 exch putinterval dup dup 173 23 getinterval 10 exch putinterval dup dup 127 exch 196 get put/) {
          for ($i=0; $i<10; $i++) {
-            print "Bad remap 1" if $actualenc[$i] ne '/.notdef' ;
+            print "Bad remap 1\n" if $actualenc[$i] ne '/.notdef' ;
             $actualenc[$i] = $actualenc[161+$i] ;
          }
          for ($i=0; $i<23; $i++) {
-            print "Bad remap 2 $pfbseen{$font} $i $actualenc[10+$i] $actualenc[173+$i]" if $actualenc[10+$i] ne '/.notdef' && $actualenc[10+$i] ne $actualenc[173+$i] ;
+            print "Bad remap 2 $pfbseen{$font} $i $actualenc[10+$i] $actualenc[173+$i]\n" if $actualenc[10+$i] ne '/.notdef' && $actualenc[10+$i] ne $actualenc[173+$i] ;
             $actualenc[10+$i] = $actualenc[173+$i] ;
          }
-         print "Bad remap 3" if $actualenc[127] ne '/.notdef' ;
+         print "Bad remap 3\n" if $actualenc[127] ne '/.notdef' ;
          $actualenc[127] = $actualenc[196] ;
          next ;
       }
@@ -246,6 +263,7 @@ for $font (keys %needpfbfile) {
    }
    $/ = $oldslash ;
 }
+print "Read $pfbfilesread PFB files.\n" ;
 for $font (keys %fontfile) {
 #
 #   At this point we should have an encoding from either the PFB/PFA
