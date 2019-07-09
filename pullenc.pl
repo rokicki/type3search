@@ -12,7 +12,7 @@ while (<F>) {
 }
 close F ;
 my $count = scalar keys %unicode ;
-print "Read $count glyph names from the Adobe Glyph Names for New Fonts.\n" ;
+# print "Read $count glyph names from the Adobe Glyph Names for New Fonts.\n" ;
 #
 #   Find fonts that appear to have both mf and pfb files.  Match by name
 #   but keep track of directory.
@@ -32,29 +32,85 @@ while (<F>) {
    $seen{$basename} = $fullname ;
 }
 #
+#   Find the built psfonts.map file and read it.  Only keep lines that match
+#   things we saw MF source for.
+#
+open F, "/usr/local/texlive/2016/texmf-dist/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
+while (<F>) {
+   next if /^\s*%/ ;
+   @f = split " ", $_ ;
+   next if !$seen{$f[0]} ;
+   /<([-_a-zA-Z0-9]+).pf[ab]/ or warn $_ ;
+   $fontfile{$f[0]} = $1 ;
+   $needpfbfile{$1}++ ;
+   if (/reencode/i) {
+      /<\[?([-_a-zA-Z0-9]+).enc/ or warn $_ ;
+      $encfile{$f[0]} = $1 ;
+      $needencfile{$1}++ ;
+   }
+}
+close F ;
+#
+#   Now find encoding files.  For now we only store their location.
+#
+open F, "find /usr/local/texlive/2016/texmf-dist/fonts -name '*.enc' |" or die "Can't fork" ;
+while (<F>) {
+   chomp ;
+   $fullname = $_ ;
+   $basename = $fullname ;
+   $basename =~ s,.*/,, ;
+   $basename =~ s,.enc$,, ;
+   if ($needencfile{$basename}) {
+      die "Duplicated encoding file?" if $foundencfile{$basename} ;
+      $foundencfile{$basename}++ ;
+      $encfullpath{$basename} = $fullname ;
+      open G, "$fullname" or die "Can't read encoding file $fullname" ;
+      @tokens = () ;
+      # tokenize into an array
+      while (<G>) {
+         chomp ;
+         s/%.*// ;
+         while (m,(/[^ ]+),g) {
+            push @tokens, $1 ;
+         }
+      }
+      close G ;
+      die "Misread encoding file $fullname" if @tokens != 257 ;
+      shift @tokens ;
+      for (@tokens) {
+         die "Space in parsed token?" if / / ;
+      }
+      $encoding{$basename} = [@tokens] ;
+   }
+}
+close F ;
+#
+#   Did we find all needed encoding files?
+#
+for (keys %needencfile) {
+   die "Missing encoding file $_" if !$foundencfile{$_} ;
+}
+#
 #   Do the same for PFB files now.  Except here we explicitly drop the
 #   rune fonts and the cbfonts; there are just too many of the latter,
 #   and the former have some issue with missing TFM files, and in general
 #   we just don't want to do all the fonts.  We also drop the cmcyr fonts.
 #
-open F, "find /usr/local/texlive/2016/texmf-dist/fonts/ -name '*.pfb' |" or die "Can't fork" ;
+open F, "find /usr/local/texlive/2016/texmf-dist/fonts/ -name '*.pfb' -o -name '*.pfa' |" or die "Can't fork" ;
 while (<F>) {
-   next if /cbfonts/ ;
-   next if /allrunes/ ;
-   next if /cmcyr/ ;
+#  next if /cbfonts/ ;
+#  next if /allrunes/ ;
+#  next if /cmcyr/ ;
    chomp ;
    $fullname = $_ ;
    $basename = $fullname ;
    $basename =~ s,.*/,, ;
-   $basename =~ s,.pfb$,, ;
-   next if !$seen{$basename} ; # only look at PFBs that have MF source files
-   if (defined($pfbseen{$basename})) {
-      print "For $basename see $pfbseen{$basename} and $fullname\n" ;
-   }
+   $basename =~ s,.pf[ab]$,, ;
+   next if !$needpfbfile{$basename} ;
+   die "Double seen PFB file?" if defined($pfbseen{$basename}) ;
    $pfbseen{$basename} = $fullname ;
 }
 my $files = scalar keys %pfbseen ;
-print "Saw $files PFB files with matching METAFONT source.\n" ;
 #
 #   Instead of pfb files we should read afm files.  We tried this, but we
 #   are missing almost all afm files for the pfb analogs of Metafont fonts
@@ -96,16 +152,19 @@ while (<F>) {
    $fullname = $_ ;
    $basename = $fullname ;
    $basename =~ s,.*/,, ;
-   $basename =~ s,.pfb$,, ;
-   next if !$pfbseen{$basename} ;
+   $basename =~ s,.tfm$,, ;
+   next if !defined($fontfile{$basename}) ;
    $tfmseen{$basename}++ ;
 }
-my $files = scalar keys %pfbseen ;
-my $tfmfiles = $files ;
-print "Saw $files PFB files with matching METAFONT source.\n" ;
-print "Saw $tfmfiles TFM files for these.\n" ;
-#
-#
+my @deleteme = () ;
+for (keys %fontfile) {
+   if (!defined($tfmseen{$_})) {
+      push @deleteme, $_ ;
+   }
+}
+for (@deleteme) {
+   delete $fontfile{$_} ;
+}
 my $linepos = 0 ;
 my $lastwasspecial = 1 ;
 my $maxline = 76 ;
@@ -138,31 +197,10 @@ sub nameout {
    cmdout($s) ;
 }
 #
-@fontfilelist = sort { $a cmp $b } values %pfbseen ;
 $seq = 0 ;
-$cnt = @fontfilelist ;
 $oldslash = $/ ;
-for $font (@fontfilelist) {
-   $fn = $font ;
-   $fn =~ s,.*/,, ;
-   $fn =~ s,.pfb,, ;
-   $seq++ ;
-   @exist = (0) x 256 ;
-   $/ = $oldslash ;
-   open F, "tftopl $fn |" or die "Can't run tftopl" ;
-   while (<F>) {
-      if (/^\(CHARACTER O (\d+)/) {
-         $exist[oct($1)] = 1 ;
-      } elsif (/^\(CHARACTER C (\S)/) {
-         $exist[ord($1)] = 1 ;
-      }
-   }
-   close F ;
-   open F, "$font" or die "Can't read $font" ;
-   $adobeglyph = 0 ;
-   $nonadobeglyph = 0 ;
-   @missingglyphs = () ;
-   $killit = 0 ;
+for $font (keys %needpfbfile) {
+   open F, "$pfbseen{$font}" or die "Can't read $font ($pfbseen{$font})" ;
    undef $/ ;
    @lines = split /[\n\r]+/, <F> ;
    @actualenc = ('/.notdef') x 256 ;
@@ -170,7 +208,20 @@ for $font (@fontfilelist) {
    $isstandard = 0 ;
    for (@lines) {
       next if /^ *%/ ;
-      # skip letters not in the tfm file
+      # this shows up in a number of PFB files to remap characters.
+      if (/dup dup 161 10 getinterval 0 exch putinterval dup dup 173 23 getinterval 10 exch putinterval dup dup 127 exch 196 get put/) {
+         for ($i=0; $i<10; $i++) {
+            print "Bad remap 1" if $actualenc[$i] ne '/.notdef' ;
+            $actualenc[$i] = $actualenc[161+$i] ;
+         }
+         for ($i=0; $i<23; $i++) {
+            print "Bad remap 2 $pfbseen{$font} $i $actualenc[10+$i] $actualenc[173+$i]" if $actualenc[10+$i] ne '/.notdef' && $actualenc[10+$i] ne $actualenc[173+$i] ;
+            $actualenc[10+$i] = $actualenc[173+$i] ;
+         }
+         print "Bad remap 3" if $actualenc[127] ne '/.notdef' ;
+         $actualenc[127] = $actualenc[196] ;
+         next ;
+      }
       next if /dup  *(\d+)/ && @exist && !$exist[$1] ;
       $isstandard++ if /Encoding/ && /StandardEncoding/ ;
       if (m,dup  *(\d+) *(/\S+)  *put,) {
@@ -189,20 +240,72 @@ for $font (@fontfilelist) {
    close F ;
    if ($isstandard) {
       die "Standard encoding, but also saw defs in $font" if $chars ;
+      $pfbenc{$font} = ['StandardEncoding'] ;
    } else {
-      if ($chars == 0) {
-         print "Not finding anything useful for $font\n" ;
-         next ;
+      $pfbenc{$font} = [@actualenc] ;
+   }
+   $/ = $oldslash ;
+}
+for $font (keys %fontfile) {
+#
+#   At this point we should have an encoding from either the PFB/PFA
+#   file or the encoding file.
+#
+#   We read the characters actually defined with tftopl.
+#
+   $fn = $font ;
+   $seq++ ;
+   @exist = (0) x 256 ;
+   $/ = $oldslash ;
+   open F, "tftopl $fn 2>/dev/null |" or die "Can't run tftopl" ;
+   while (<F>) {
+      if (/^\(CHARACTER O (\d+)/) {
+         $exist[oct($1)] = 1 ;
+      } elsif (/^\(CHARACTER C (\S)/) {
+         $exist[ord($1)] = 1 ;
+      }
+   }
+   close F ;
+   $adobeglyph = 0 ;
+   $nonadobeglyph = 0 ;
+   @missingglyphs = () ;
+   @enc = () ;
+   $isstandard = 0 ;
+   if ($encfile{$font}) {
+      $fromencfile++ ;
+      @enc = @{$encoding{$encfile{$font}}} ;
+   } elsif ($fontfile{$font}) {
+      $frompfbfile++ ;
+      @enc = @{$pfbenc{$fontfile{$font}}} ;
+   } else {
+      die "No encoding for $font\n" ;
+   }
+   if (@enc == 1) {
+      die "Expected standard encoding but got [@enc]" if $enc[0] ne 'StandardEncoding' ;
+      $isstandard = 1 ;
+   } elsif (@enc == 256) {
+      for ($i=0; $i<256; $i++) {
+         $glyphname = substr($enc[$i], 1) ;
+         next if $glyphname eq '.notdef' ;
+         $chars++ ;
+         if (defined($unicode{$glyphname})) {
+            $adobeglyph++ ;
+         } else {
+            $nonadobeglyph++ ;
+            push @missingglyphs, $glyphname ;
+         }
       }
       @badchars = () ;
       for ($i=0; $i<@exist; $i++) {
-         if ($exist[$i] && $actualenc[$i] eq '/.notdef') {
+         if ($exist[$i] && $enc[$i] eq '/.notdef') {
             push @badchars, $i ;
          }
       }
       if (@badchars) {
-         print "Font $font chars in TFM but not in PFB: [@badchars]\n" ;
+         print "Font $font chars in TFM but not in Encoding: [@badchars]\n" ;
       }
+   } else {
+      die "Bad enc length " . (scalar @enc) . " [@enc]" ;
    }
    $/ = $oldslash ;
    open G, ">encs/$fn.enc" or die "Can't write $font encoding" ;
@@ -214,7 +317,7 @@ for $font (@fontfilelist) {
       $i = 0 ;
       while ($i < 256) {
          $j = $i ;
-         $j++ while $j < 256 && $actualenc[$j] eq '/.notdef' ;
+         $j++ while $j < 256 && $enc[$j] eq '/.notdef' ;
          if ($j-$i > 2) {
             cmdout($j-$i) ;
             specialout('{') ;
@@ -223,7 +326,7 @@ for $font (@fontfilelist) {
             cmdout('repeat') ;
             $i = $j ;
          } else {
-            nameout($actualenc[$i]) ;
+            nameout($enc[$i]) ;
             $i++ ;
          }
       }
@@ -263,3 +366,4 @@ for (keys %f) {
    close G ;
 }
 close F ;
+print "Got encoding $fromencfile from encoding file and $frompfbfile from pfb file.\n" ;
