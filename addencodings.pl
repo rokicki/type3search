@@ -33,40 +33,15 @@ sub emit {
 }
 my $encnum = 0 ;
 sub emitnames {
-   my $i ;
-   for ($i=0; $i<256; $i++) {
-      if (defined($names[$i]) && $names[$i] eq '/.notdef') {
-         $names[$i] = undef ;
-      }
-   }
-   my $k = join ',', map{$_ || '?'}@names ;
-   if (defined($enc{$k})) {
-      print "/IEn $enc{$k} N\n" ;
-      return ;
+   my $cacheable = shift ;
+   if (defined($cache{$cacheable})) {
+      print "$cache{$cacheable}\n" ;
    } else {
-      $enc{$k} = "EN$encnum" ;
-      $encnum++ ;
+      my $key = "EN" . $encnum++ ;
+      $cache{$cacheable} = $key ;
+      print $cacheable ;
+      emit("A/$key X ") ;
    }
-   $loc = 0 ;
-   emit("/$enc{$k}\[") ;
-   for ($i=0; $i<256; $i++) {
-      if (!defined($names[$i])) {
-         my $j = $i + 1 ;
-         while ($j < 256 && !defined($names[$j])) {
-            $j++ ;
-         }
-         if ($j-$i > 2) {
-            emit(" ".($j-$i) . "{/.notdef}repeat") ;
-            $i = $j - 1 ;
-         } else {
-            emit("/.notdef") ;
-         }
-      } else {
-         emit($names[$i]) ;
-      }
-   }
-   emit("]N/IEn $enc{$k} N") ;
-   print "\n" ;
 }
 @k = () ;
 $keep = 0 ;
@@ -153,21 +128,20 @@ while (<>) {
       $hscale = $hdpi * $fontsize / 72 ;
       $hsi = (1+1/8000000) / $hscale ;
       $hsi = 1 if !$scalefont ;
-      print "IEn FBB FMat/FMat[$hsi 0 0 -$hsi 0 0]N\n" ;
-      if (open E, "encs/$fn.enc") {
-         @names = () ;
+      my @cacheable = () ;
+      if (open E, "encs/dvips-$fn.enc") {
          while (<E>) {
-            if (m,dup (\d+) (/\S+) put,) {
-               $names[$1] = $2 ;
-            }
+            push @cacheable, $_ ;
          }
          close E ;
-         emitnames() ;
+         $cacheable = join '', @cacheable ;
+         emitnames($cacheable) ;
       } else {
          warn "Cannot find encoding for $fn.enc" ;
-         print "/IEn StandardEncoding N\n" ;
+         print "StandardEncoding\n" ;
       }
       scansizes() ;
+      print "IEn S/IEn X FBB FMat/FMat[$hsi 0 0 -$hsi 0 0]N\n" ;
       print "/FBB[$llx $lly $urx $ury]N\n" if $rewritebb ;
       print for @k ;
       print "/$fid load 0 $fid currentfont $hscale scalefont put\n" if $scalefont ;
