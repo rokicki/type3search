@@ -31,9 +31,7 @@ this work.
 # Current Status
 
 I have implemented the changes to dvips (except for making it
-optional and fully documenting the implementation).  I have
-not yet implemented some new ideas and will be revising this
-implementation.
+optional and fully documenting the implementation).
 I also have the experimental
 code in this directory so you can see the impact without
 needing to rebuild dvips.
@@ -97,6 +95,10 @@ Test with memory limited sectioning.
 
 Test more PDF renderers.  Test ancient Postscript renderers (original
 LaserWriter?).
+
+Test with fonts with missing encoding files.
+
+Test with fonts with StandardEncoding.
 
 Do more bit-for-bit tests between old and new dvips.
 
