@@ -78,19 +78,11 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
-Some fonts like plr10 apparently pick up a new encoding vector,
-probably in a map file somewhere.  The pullenc script needs to
-use that instead of what it finds in the PFB file, if I can figure
-out the search order for those.
-
-Make dvips-all.enc shorter by packing the encodings as dvips
-would write them.
-
 Make dvips not care about the actual contents of the encoding file.
 
 Enable the encodings to update the FontDictionary (for instance) by making
 the object on the stack be an executable procedure rather than
-just a static array.
+just a static array. (Done but test this)
 
 Make the new dvips functionality a command-line and configuration-time
 option.  Include the ability to switch on/off the new font scaling,
@@ -142,7 +134,8 @@ figure out a way to get Unicode code points from PostScript into
 PDF, this will permit non-English characters to work too.
 
 Because of all of this the current implementation is in a state of
-flux.
+flux.  Everything in this repository should be up to date but the
+dvips changes in the texlive branch are not updated yet.
 
 # Rejected Ideas
 
