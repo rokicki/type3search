@@ -1,7 +1,0 @@
-/Encoding 256 array
-0 1 255 { 1 index exch/.notdef put} for
-dup 17/quotedblright put
-dup 70/F put
-dup 102/f put
-dup 112/p put
-readonly def

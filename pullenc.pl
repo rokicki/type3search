@@ -302,7 +302,19 @@ for $font (keys %fontfile) {
       die "Expected standard encoding but got [@enc]" if $enc[0] ne 'StandardEncoding' ;
       $isstandard = 1 ;
    } elsif (@enc == 256) {
+      @badchars = () ;
+      for ($i=0; $i<@exist; $i++) {
+         if ($exist[$i] && $enc[$i] eq '/.notdef') {
+            push @badchars, $i ;
+         }
+      }
+      if (@badchars) {
+         print "Font $font chars in TFM but not in Encoding: [@badchars]\n" ;
+      }
       for ($i=0; $i<256; $i++) {
+         if (!$exist[$i]) {
+            $enc[$i] = '/.notdef' ;
+         }
          $glyphname = substr($enc[$i], 1) ;
          next if $glyphname eq '.notdef' ;
          $chars++ ;
@@ -313,20 +325,11 @@ for $font (keys %fontfile) {
             push @missingglyphs, $glyphname ;
          }
       }
-      @badchars = () ;
-      for ($i=0; $i<@exist; $i++) {
-         if ($exist[$i] && $enc[$i] eq '/.notdef') {
-            push @badchars, $i ;
-         }
-      }
-      if (@badchars) {
-         print "Font $font chars in TFM but not in Encoding: [@badchars]\n" ;
-      }
    } else {
       die "Bad enc length " . (scalar @enc) . " [@enc]" ;
    }
    $/ = $oldslash ;
-   open G, ">encs/$fn.enc" or die "Can't write $font encoding" ;
+   open G, ">encs/dvips-$fn.enc" or die "Can't write $font encoding" ;
    $linepos = 0 ;
    if ($isstandard) {
       print G "StandardEncoding\n" ;
@@ -352,7 +355,7 @@ for $font (keys %fontfile) {
       endofline() ;
    }
    close G ;
-   my $r = `md5 encs/$fn.enc` ;
+   my $r = `md5 encs/dvips-$fn.enc` ;
    chomp $r ;
    @f = split " ", $r ;
    $r = $f[-1] ;
@@ -374,10 +377,10 @@ open F, ">encs/dvips-all.enc" or die "Can't write dvips-all.enc" ;
 for (keys %f) {
    $fontc = @{$f{$_}} ;
    print "$_: $validagl{$_} $invalidagl{$_} $fontc @{$f{$_}}\n" ;
-   for (@{$f{$_}}) {
+   for (sort {$a cmp $b} @{$f{$_}}) {
       print F "$_:\n" ;
    }
-   open G, "encs/$f{$_}[0].enc" or die "Can't read file" ;
+   open G, "encs/dvips-$f{$_}[0].enc" or die "Can't read file" ;
    while (<G>) {
       print F $_ ;
    }

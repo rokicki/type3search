@@ -1,0 +1,88 @@
+The TFM file has a zero-width character here with no
+CHARWD or CHARHT so it's probably bogus; just a zero-width space.
+No visible difference when using testfont.
+
+Font MnSymbolS-Bold10 chars in TFM but not in Encoding: [0]
+Font MnSymbolS-Bold12 chars in TFM but not in Encoding: [0]
+Font MnSymbolS-Bold5 chars in TFM but not in Encoding: [0]
+Font MnSymbolS-Bold6 chars in TFM but not in Encoding: [0]
+Font MnSymbolS-Bold7 chars in TFM but not in Encoding: [0]
+Font MnSymbolS-Bold8 chars in TFM but not in Encoding: [0]
+Font MnSymbolS-Bold9 chars in TFM but not in Encoding: [0]
+Font MnSymbolS10 chars in TFM but not in Encoding: [0]
+Font MnSymbolS12 chars in TFM but not in Encoding: [0]
+Font MnSymbolS5 chars in TFM but not in Encoding: [0]
+Font MnSymbolS6 chars in TFM but not in Encoding: [0]
+Font MnSymbolS7 chars in TFM but not in Encoding: [0]
+Font MnSymbolS8 chars in TFM but not in Encoding: [0]
+Font MnSymbolS9 chars in TFM but not in Encoding: [0]
+
+The writet1 also complains about these missing characters.
+Also, Type 1 usage doesn't work since the font name doesn't
+match what's in the psfonts.map file.  Note that cminb10 also
+doesn't work in Type 1.
+
+Font cminb17 chars in TFM but not in Encoding: [96]
+Font cminb7 chars in TFM but not in Encoding: [33 34]
+
+Writet1 also complains here.  Both characters appear to be
+blank.  Probably can ignore this one.
+
+Font grxn1200 chars in TFM but not in Encoding: [118 159]
+
+Writet1 also complains here.  Characters appear to be
+blank.  Probably can ignore this one.
+
+Font vnb10 chars in TFM but not in Encoding: [23]
+Font vnbx10 chars in TFM but not in Encoding: [23]
+Font vnbx12 chars in TFM but not in Encoding: [23]
+Font vnbx5 chars in TFM but not in Encoding: [23]
+Font vnbx6 chars in TFM but not in Encoding: [23]
+Font vnbx7 chars in TFM but not in Encoding: [23]
+Font vnbx8 chars in TFM but not in Encoding: [23]
+Font vnbx9 chars in TFM but not in Encoding: [23]
+Font vnbxsl10 chars in TFM but not in Encoding: [23]
+Font vnbxti10 chars in TFM but not in Encoding: [23]
+Font vncsc10 chars in TFM but not in Encoding: [23]
+Font vndunh10 chars in TFM but not in Encoding: [23]
+Font vnff10 chars in TFM but not in Encoding: [23]
+Font vnfi10 chars in TFM but not in Encoding: [23]
+Font vnfib8 chars in TFM but not in Encoding: [23]
+Font vnitt10 chars in TFM but not in Encoding: [23]
+Font vnr10 chars in TFM but not in Encoding: [23]
+Font vnr12 chars in TFM but not in Encoding: [23]
+Font vnr17 chars in TFM but not in Encoding: [23]
+Font vnr5 chars in TFM but not in Encoding: [23]
+Font vnr6 chars in TFM but not in Encoding: [23]
+Font vnr7 chars in TFM but not in Encoding: [23]
+Font vnr8 chars in TFM but not in Encoding: [23]
+Font vnr9 chars in TFM but not in Encoding: [23]
+Font vnsl10 chars in TFM but not in Encoding: [23]
+Font vnsl12 chars in TFM but not in Encoding: [23]
+Font vnsl8 chars in TFM but not in Encoding: [23]
+Font vnsl9 chars in TFM but not in Encoding: [23]
+Font vnsltt10 chars in TFM but not in Encoding: [23]
+Font vnss10 chars in TFM but not in Encoding: [23]
+Font vnss12 chars in TFM but not in Encoding: [23]
+Font vnss8 chars in TFM but not in Encoding: [23]
+Font vnss9 chars in TFM but not in Encoding: [23]
+Font vnssbx10 chars in TFM but not in Encoding: [23]
+Font vnssdc10 chars in TFM but not in Encoding: [23]
+Font vnssi10 chars in TFM but not in Encoding: [23]
+Font vnssi12 chars in TFM but not in Encoding: [23]
+Font vnssi8 chars in TFM but not in Encoding: [23]
+Font vnssi9 chars in TFM but not in Encoding: [23]
+Font vnssq8 chars in TFM but not in Encoding: [23]
+Font vnssqi8 chars in TFM but not in Encoding: [23]
+Font vntcsc10 chars in TFM but not in Encoding: [23]
+Font vnti10 chars in TFM but not in Encoding: [23]
+Font vnti12 chars in TFM but not in Encoding: [23]
+Font vnti7 chars in TFM but not in Encoding: [23]
+Font vnti8 chars in TFM but not in Encoding: [23]
+Font vnti9 chars in TFM but not in Encoding: [23]
+Font vntt10 chars in TFM but not in Encoding: [23]
+Font vntt12 chars in TFM but not in Encoding: [23]
+Font vntt8 chars in TFM but not in Encoding: [23]
+Font vntt9 chars in TFM but not in Encoding: [23]
+Font vnu10 chars in TFM but not in Encoding: [23]
+Font vnvtt10 chars in TFM but not in Encoding: [23]
