@@ -18,7 +18,7 @@ my $count = scalar keys %unicode ;
 #   but keep track of directory.
 #
 $mfread = 0 ;
-open F, "find /usr/local/texlive/2016/texmf-dist/fonts/source -name '*.mf' |" or die "Can't fork" ;
+open F, "find /usr/local/texlive/2019/texmf-dist/fonts/source -name '*.mf' |" or die "Can't fork" ;
 $ignorethese{$_}++ for qw(test bzrsetup local ligature gamma) ;
 while (<F>) {
    $mfread++ ;
@@ -39,7 +39,7 @@ print "Saw $mfread METAFONT files.\n" ;
 #   things we saw MF source for.
 #
 my $matchingpsfonts = 0 ;
-open F, "/usr/local/texlive/2016/texmf-dist/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
+open F, "/usr/local/texlive/2019/texmf-dist/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
 while (<F>) {
    next if /^\s*%/ ;
    @f = split " ", $_ ;
@@ -60,7 +60,7 @@ print "Saw $matchingpsfonts matching PostScript fonts.\n" ;
 #   Now find encoding files.  For now we only store their location.
 #
 my $encfilesread = 0 ;
-open F, "find /usr/local/texlive/2016/texmf-dist/fonts -name '*.enc' |" or die "Can't fork" ;
+open F, "find /usr/local/texlive/2019/texmf-dist/fonts -name '*.enc' |" or die "Can't fork" ;
 while (<F>) {
    chomp ;
    $fullname = $_ ;
@@ -106,7 +106,7 @@ for (keys %needencfile) {
 #   we just don't want to do all the fonts.  We also drop the cmcyr fonts.
 #
 my $pfbfilesseen = 0 ;
-open F, "find /usr/local/texlive/2016/texmf-dist/fonts/ -name '*.pfb' -o -name '*.pfa' |" or die "Can't fork" ;
+open F, "find /usr/local/texlive/2019/texmf-dist/fonts/ -name '*.pfb' -o -name '*.pfa' |" or die "Can't fork" ;
 while (<F>) {
 #  next if /cbfonts/ ;
 #  next if /allrunes/ ;
@@ -129,7 +129,7 @@ my $files = scalar keys %pfbseen ;
 #   so we don't do this.
 #
 if (0) {
-   open F, "find /usr/local/texlive/2016/texmf-dist/fonts/ -name '*.afm' |" or die "Can't fork" ;
+   open F, "find /usr/local/texlive/2019/texmf-dist/fonts/ -name '*.afm' |" or die "Can't fork" ;
    while (<F>) {
       next if /cbfonts/ ;
       next if /allrunes/ ;
@@ -159,7 +159,7 @@ if (0) {
 #   Make sure we have tfm files for all of these.
 #
 my $tfmfilesseen = 0 ;
-open F, "find /usr/local/texlive/2016/texmf-dist/fonts/ -name '*.tfm' |" or die "Can't fork" ;
+open F, "find /usr/local/texlive/2019/texmf-dist/fonts/ -name '*.tfm' |" or die "Can't fork" ;
 while (<F>) {
    chomp ;
    $fullname = $_ ;
