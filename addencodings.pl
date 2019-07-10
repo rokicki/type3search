@@ -43,6 +43,32 @@ sub emitnames {
       emit("A/$key X ") ;
    }
 }
+my %allenc = () ;
+sub loadall {
+   my @keys = () ;
+   my @enc = () ;
+   open F, "encs/dvips-all.enc" or die "Can't read dvips-all.enc" ;
+   print STDERR "Reading encs/dvips-all.enc\n" ;
+   while (<F>) {
+      if (/^([^ ]*):$/) {
+         my $key = $1 ;
+         if (@enc) {
+            my $enc = join '', @enc ;
+            $allenc{$_} = $enc for @keys ;
+            @enc = () ;
+            @keys = () ;
+         }
+         push @keys, $key ;
+      } else {
+         push @enc, $_ ;
+      }
+   }
+   close F ;
+   if (@enc) {
+      my $enc = join '', @enc ;
+      $allenc{$_} = $enc for @keys ;
+   }
+}
 @k = () ;
 $keep = 0 ;
 $fn = undef ;
@@ -120,6 +146,7 @@ sub scansizes {
       $ury = $maxy if $maxy > $ury ;
    }
 }
+loadall() ;
 while (<>) {
    if (/TeXDict begin \S+ \S+ \S+ (\S+) /) {
       $hdpi = $1 ;
@@ -129,7 +156,10 @@ while (<>) {
       $hsi = (1+1/8000000) / $hscale ;
       $hsi = 1 if !$scalefont ;
       my @cacheable = () ;
-      if (open E, "encs/dvips-$fn.enc") {
+      if (defined($allenc{$fn})) {
+         emitnames($allenc{$fn}) ;
+      } elsif (open E, "encs/dvips-$fn.enc") {
+         print STDERR "Reading encs/dvips-$fn.enc\n" ;
          while (<E>) {
             push @cacheable, $_ ;
          }
