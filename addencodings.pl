@@ -35,7 +35,8 @@ my $encnum = 0 ;
 sub emitnames {
    my $cacheable = shift ;
    if (defined($cache{$cacheable})) {
-      print "$cache{$cacheable}\n" ;
+      # we use load to get the value and defer execution.
+      print "/$cache{$cacheable} load\n" ;
    } else {
       my $key = "EN" . $encnum++ ;
       $cache{$cacheable} = $key ;
