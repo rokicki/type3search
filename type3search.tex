@@ -41,9 +41,12 @@ easy, at least for English text, and comes with no significant
 cost.
 
 This small change is not nearly a full solution to create
-accessible \PDF\ multilingual documents, but as it will
-improve the situation for some common use cases it is still
-a valid and important change.
+accessible \PDF\ multilingual documents.  Modern support
+for input encodings and explicit font encodings, and
+direct generation of \PDF\ rather than going through the
+Postscript language, can yield better results.  But if
+you want to use \MF\ fonts as-generated and \dvips,
+then this is an important change.
 
 We describe how we generated reasonable encoding vectors
 for common \MF\ fonts, how \dvips\ finds these
@@ -95,9 +98,13 @@ When you run this through \TeX\ and then \dvips\
 and not Type 1 fonts), and then process the PostScript
 result with \ps2pdf, the resulting \PDF\ does not
 support text search in most \PDF\ viewers.  In Acrobat
-with copy and paste it almost works; for some reason
+with copy and paste it almost works;
 the c's are dropped throughout (San Francisco becomes
-San Fran is o), and ligatures don't work.  In OSX
+San Fran is o).  The c's are dropped because the
+original \dvips\ encoding uses \texttt{/CR} as the
+name for this character and it is apparently
+interpreted as a non-marking carriage return.
+Ligatures also don't work.  In OSX
 preview, selecting text appears to fail (it
 actually works, but the selection boxes are too small
 to see that anything has actually been selected) and
