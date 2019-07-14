@@ -21,13 +21,12 @@
 \maketitle
 
 \begin{abstract}
-The web is filled with \PDF\ files generated from the output of
-\dvips\ using bitmapped fonts that are not properly searchable,
+\PDF\ files generated from the output of \dvips\ using
+bitmapped fonts are not properly searchable,
 indexable, or accessible.  While a full solution is challenging,
-only minimal changes are required to \dvips\ to support
+only minimal \dvips\ changes are required to support
 English language text, changes that are at least two decades overdue.
-I will show what the changes are as well as discuss their
-limitations.
+I will describe these changes and discuss their limitations.
 \end{abstract}
 
 \section{Introduction}
@@ -42,13 +41,12 @@ cost.
 
 This small change is not nearly a full solution to create
 accessible \PDF\ multilingual documents.  Modern support
-for input encodings and explicit font encodings, and
-direct generation of \PDF\ rather than going through the
-Postscript language, can yield better results.  But if
-you want to use \MF\ fonts as-generated and \dvips,
-then this is an important change.
+for eight-bit input encodings\cite{ENC}, explicit font encodings\cite{MMAP},
+and direct generation of \PDF\ can yield better results.
+But if you want to use \MF\ fonts as-generated and \dvips,
+this is an important change.
 
-We describe how we generated reasonable encoding vectors
+I describe how I generated reasonable encoding vectors
 for common \MF\ fonts, how \dvips\ finds these
 encoding vectors and embeds them in the Postscript file, and
 how the current implementation allows for future
@@ -66,18 +64,19 @@ despite the fact that at the time, the vector was completely
 unnecessary in rendering the glyphs.  Not considering that people
 might someday use that encoding vector for glyph identification,
 I generated a semantically nonsensical but syntactically acceptable
-vector for all bitmapped fonts on that fateful day in 1986, and
+vector (\texttt{/A0}--\texttt{/H3} in base 36) for all bitmapped
+fonts on that fateful day in 1986, and
 this vector remains to this day, subverting any attempt to search
 copy, or use screen readers.
 
-Just replacing this encoding vector with something more
-reasonable remedies this problem for the most part, for
-English-language text.
+Replacing this encoding vector with something more
+reasonable allows \PDF\ viewers to properly understand what
+characters are being rendered, at least for English-language text.
 
 \section{A Sample}
 
 The following \TeX\ file, cribbed from \texttt{testfont.tex}
-but using only a single font, will be used as illustration.
+but using only a single font, will be used for illustration.
 
 \begin{verbatim}[\small]
 \hsize=3in \noindent
@@ -95,8 +94,8 @@ in fluffy souffl\'es?
 \noindent
 When you run this through \TeX\ and \dvips\
 (giving the \texttt{-V1} option to enforce bitmapped
-and not Type 1 fonts), and then process the PostScript
-result with \ps2pdf, the resulting \PDF\ does not
+and not Type 1 fonts), and then \ps2pdf,
+the resulting \PDF\ does not
 support text search in most \PDF\ viewers.  In Acrobat
 with copy and paste it almost works;
 the c's are dropped throughout (San Francisco becomes
@@ -105,11 +104,12 @@ original \dvips\ encoding uses \texttt{/CR} as the
 name for this character and it is apparently
 interpreted as a non-marking carriage return.
 Ligatures also don't work.  In OSX
-preview, selecting text appears to fail (it
+Preview (the default \PDF\ viewer for the Mac),
+selecting text appears to fail (it
 actually works, but the selection boxes are too small
 to see that anything has actually been selected) and
 no characters are recognized as alphabetic.  In Chrome
-\PDF\ Preview, selecting text gives a random note
+\PDF\ preview, selecting text gives a random note
 appearance with each word separately selected by its
 bounding box and no alphabetic characters recognized.
 
@@ -123,14 +123,14 @@ sensible encoding vector in the Type 3 font.
 
 \section{First Attempts and Failure}
 
-If we manually copy the Encoding vector from
+If I manually copy the \texttt{Encoding} vector from
 the output of dvips using Type 1 fonts and put that
 in the font definition for the Type 3 fonts, the situation
 improves; now Adobe Acrobat properly supports text
 functions (including ligatures but not accented
 characters).  The other \PDF\ viewers now recognize
 alphabetic characters, but they still have a number of
-other problems.
+problems.
 
 With OSX Preview, if you use command-A
 (to select all the text) and then command-C (to copy
@@ -169,33 +169,36 @@ The heuristics differ significantly from viewer to
 viewer.  The most important heuristic appears to be
 that interpreting horizontal escapement into one of
 three categories: kerns, word breaks, and column
-gutters.  To satisfy the \PDF\ viewers I had access to,
-I had to do two additional modifications to each bitmapped
-font.
+gutters.  OSX Preview was failing so badly because it
+was recognizing rivers in the paragraph as separating
+columns of text.
+To satisfy the \PDF\ viewers I had access to,
+I made two additional modifications to each bitmapped font.
 
-First, I had to adjust the font coordinate system.
+First, I adjusted the font coordinate system.
 The default Adobe font coordinate system has 1000 units
 to the em, while the original
-\dvips\ uses a coordinate system that had one unit to the
+\dvips\ uses a coordinate system with one unit to the
 pixel both for the page and for the font, and doesn't use
 the PostScript \texttt{scalefont} primitive.  But not using
-\texttt{scalefont} apparently made some viewers think all the
-fonts were just one point high, and they used heuristics
+\texttt{scalefont} apparently makes some viewers think all the
+fonts are just one point high, and they use spacing heuristics
 appropriate for such a font.  By providing a font matrix
-that was more in line with conventional fonts, and using
-\texttt{scalefont}, \PDF\ viewers made better guesses about
-the appropriate font metrics used in their heuristics.
+more in line with conventional fonts, and using
+\texttt{scalefont}, \PDF\ viewers make better guesses about
+the appropriate font metrics for their heuristics.
 
-Second, I had to calculate and provide a real font bounding
-box.  The original \dvips\ code gave all zeros for the font
+Second, I provide a real font bounding
+box.  The original \dvips\ code gives all zeros for the font
 bounding box, which is specifically allowed by Postscript,
-but this confused some \PDF\ viewers.  So I added code to
+but this confuses some \PDF\ viewers.  So I wrote code to
 calculate the actual bounding box for the font from the
-glyph definitions and provided that.
+glyph definitions.
 
 With these adjustments, using \dvips\ with bitmapped fonts
 and \ps2pdf\ generates \PDF\ files that can be properly
-searched---for English language text.
+searched with most \PDF\ viewers---at least, for English
+language text.
 
 \section{Other Languages: No Success}
 
@@ -204,7 +207,7 @@ well, but was not able to get it to work.  Clearly the
 \PDF\ viewers are recognizing characters by the glyph
 names, but this appears to work only with a small set of
 glyph names.  I hoped that those listed in the official
-Adobe Glyph List would work, but in my experiments they
+Adobe Glyph List\cite{AGL} would work, but in my experiments they
 (for the most part) did not.  I also tried Unicode code
 point glyph names such as \texttt{/uni1234} and \texttt{/u1234}
 but neither of these formats worked in the \PDF\ viewers
@@ -213,40 +216,47 @@ to the font, with no success, and even tried some lightly
 documented GhostView hacks, but was only able to achieve
 distressingly partial success for most non-Roman characters.
 
-Then there are accents, and more generally, virtual fonts.
-With standard seven-bit encoding, accents are generally
+Even if the individual glyphs are recognized, problems remain
+with accents, and more generally, virtual fonts.
+With a standard seven-bit encoding, accents are generally
 rendered as two separate characters, where the \PDF\ viewer
-only expects to see a single composite character.  Further,
+expects to see only a single composite character.  Further,
 the entire virtual font layer would need to be mapped in
 some fashion, as the \PDF\ contains the physical glyphs
 that are often combined in some way to provide the semantic
 characters.  Supporting this would have required significantly
-more work, and there are already efforts in this direction
-from people much more knowledgeable and capable than I am.
+more effort and heuristics, and there are already efforts in
+this direction from people much more knowledgeable and capable
+than I am.  The most logical general solution is to use properly
+coded input, such as UTF-8, and where transformation to multiple
+glyphs is necessary, embed the appropriate mapping information
+directly in the \PDF\ file.
 
 The lack of success for other languages diminishes these
 proposed changes, but the changes are still important as they
 do provide reasonable support for English-language documents.
-The implementation provides for some future experimentation and
-extension, as will be described.
+Since \PDF\ viewers are a moving target, as are the PostScript
+to \PDF\ converters, the implementation provides for some future
+experimentation and extension.
 
 \section{Finding Font Encodings}
 
 In order to provide more than a proof of concept, I had to
 locate appropriate glyph names for the fonts provided with
-\TeX Live, as well as give a way for end users to add their
+\TeX Live, as well as provide a mechanism for end users to add their
 own glyph names for their own personal fonts.
 
 Over the years nearly all (if not all) of the \MF\ fonts
 provided with \TeX Live have been translated to the Type 1
 format by others, and as part of that process reasonable
 encoding vectors have been created for the glyphs.  I
-decided to completely leverage this work, so I wrote a
+decided to leverage this work, so I wrote a
 script that located all the \MF\ sources in the \TeX Live
 distribution, all the corresponding Type 1 fonts, and any
 encoding files used in the relevant \texttt{psfonts.map}
 file.  A big Perl script chewed on all of this, extracting
-encoding vectors and naming files appropriately.  Some of
+encoding vectors and creating appropriate files for
+\dvips.  Some of
 the encoding vectors use glyph names that are not particularly
 useful, and some use glyph names based on Unicode code
 points that are not currently recognized by the \PDF\ viewers
@@ -260,11 +270,11 @@ I considered having \dvips\ read the encoding vectors
 directly from the Type 1 fonts, rather than extracting them
 and storing them elsewhere, but decided against this; I wanted
 \dvips\ to use appropriate glyph names even if the Type 1
-fonts didn't exist at all.  This does introduce a certain
+fonts didn't exist at all.  This does introduce
 redundancy which can potentially lead to an inconsistency in
 the glyph names, but the fonts are currently mostly stable, and
 glyph name extraction process can be
-repeated as needed if substantive changes are made.
+repeated as needed if meaningful changes are made.
 
 \section{Storing and Distributing Encodings}
 
@@ -283,13 +293,14 @@ enabled me to distribute a simple test Perl script that mocked
 the changes so people could try them out without updating their
 \TeX\ installation.
 
-This combined file, called \texttt{dvips-all.enc}, just provides
+This combined file, called \texttt{dvips-all.enc}, provides
 the default encoding used by the 2885 distributed \TeX Live
 \MF\ fonts.  In every case that \dvips\ looks for an encoding,
 i.e., for \texttt{cmr10}, it first searches for \texttt{dvips-cmr10.enc}
 and only falls back to the information in the combined file if
-that file is not found.  This permits users to provide their
-own encoding for local \MF\ fonts, as well.
+the font-specific file is not found.  This permits users to override
+the provided encodings, as well as define their
+own encoding for local \MF\ fonts.
 
 The format of the encoding file is slightly different from that
 of other encoding files in the \TeX Live distribution.  The
@@ -300,7 +311,7 @@ Postscript names, or it should be a procedure that pushes
 such an encoding vector.  It should not attempt to define
 the \texttt{/Encoding} name in the current dictionary, as some other
 encoding file formats do.  A sample file, one that can be used
-for \texttt{cmr10} (and some other Computer Modern fonts) is:
+for \texttt{cmr10} (and many other Computer Modern fonts) is:
 
 \begin{verbatim}[\small]
 [/Gamma/Delta/Theta/Lambda/Xi/Pi/Sigma/Upsilon
@@ -350,11 +361,11 @@ change is made to the generated output for that font.
 
 \section{Testing the Changes Without Updating}
 
-So you can test my proposed changes to the \dvips\ output
-files without updating their distribution or building a new
-version of \dvips, I provide the Perl script
-\texttt{addencodings.pl}.
-This script reads a Postscript file generated by \dvips\ on
+You can test my proposed changes to the \dvips\ output
+files without updating your distribution or building a new
+version of \dvips.  The Perl script
+\texttt{addencodings.pl}\cite{T3S}
+reads a Postscript file generated by \dvips\ on
 standard input and writes the PostScript file that would be
 generated by a modified \dvips\ on standard output.  No
 additional files are required for this testing; the default
@@ -365,7 +376,7 @@ the Perl script.
 
 In general, \dvips\ usage is unchanged.  Warnings in
 the functionality of the bitmap encoding are disabled by default,
-so as to not disturb existing workflows, although this may
+so as to not disturb existing workflows; this may
 change in the future.
 
 The following command line options and configuration options are
@@ -374,26 +385,21 @@ option but without the hyphen.  No configuration or command line
 option presently takes an argument.
 
 \begin{itemize}
-\item \texttt{-nobitmapencoding} Disable the bitmap font encoding
-functionality.
-\item \texttt{-warnbitmapencoding} Enable warnings for bitmap font
-encoding (such as a missing encoding for a font).
-\item \texttt{-nobitmapfontscaling} Turn off the bitmap font
-scaling used to pacify some \PDF\ viewers.
-\PDF\ search functionality.
-\item \texttt{-nobitmapfontbbox} Turn off the bitmap bounding
-boxes added to pacify some \PDF\ viewers.
+\item \texttt{-[no]bitmapencoding} Enable or disable the bitmap font encoding
+functionality (default: enabled).
+\item \texttt{-[no]warnbitmapencoding} Enable or disable warnings for bitmap font
+encoding such as a missing encoding for a font (default: disabled).
+\item \texttt{-[no]bitmapfontscaling} Enable or disable the use of
+\texttt{scalefont} on bitmap fonts (default: enabled).
+\item \texttt{-nobitmapfontbbox} Enable or disable the  bitmap font bounding
+boxes (default: enabled).
 \end{itemize}
-
-Use of the first or the last two options will negatively affect the
-ability to search \PDF\ files generated from the resulting
-PostScript.
 
 \section{Extension Support}
 
 Remember that the encoding file is an arbitrary Postscript fragment
 that pushes a single object on the operand stack, and that object
-can be a procedure.  We permit it to be a procedure to support
+can be a procedure.  I permit it to be a procedure to support
 experimenting with other changes to the font dictionary to improve
 text support in \PDF\ viewers.  For instance, if a technique for
 introducing Unicode code points for glyphs into a Postscript font
@@ -407,11 +413,12 @@ that defines a procedure that modifies the Encoding vector to swap
 single alphabetic characters much like the \texttt{rot13} obfuscation
 common during the Usenet days.  With this modification, copying
 text from a \PDF\ copies (mostly) content that has been obfuscated
-(except for ligatures).
+(except for ligatures).  This brings us full circle to the
+current unreadable text copied from the original \dvips.
 
 \bibliographystyle{tugboat}% or plain if you don't have tugboat.bst
-% \nocite{book-minimal}      % just making the bibliography non-empty
-% \bibliography{xampl}       % xampl.bib comes with BibTeX
+
+\bibliography{type3search}
 
 \makesignature
 \end{document}

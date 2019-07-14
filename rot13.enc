@@ -10,15 +10,15 @@
 /a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y/z
 /endash/emdash/hungarumlaut/tilde/dieresis 128{/.notdef}repeat]
 65 1 77 {
-   2 copy get % [] i v[i]
-   3 copy pop 13 add get % [] i v[i] v[i+13]
+   2 copy get
+   3 copy pop 13 add get
    4 copy exch pop put
    4 copy pop exch 13 add exch put
    pop pop pop
 } for
 97 1 109 {
-   2 copy get % [] i v[i]
-   3 copy pop 13 add get % [] i v[i] v[i+13]
+   2 copy get
+   3 copy pop 13 add get
    4 copy exch pop put
    4 copy pop exch 13 add exch put
    pop pop pop
