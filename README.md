@@ -76,16 +76,6 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
-Make dvips not care about the actual contents of the encoding file.
-
-Enable the encodings to update the FontDictionary (for instance) by making
-the object on the stack be an executable procedure rather than
-just a static array. (Done but test this)
-
-Make the new dvips functionality a command-line and configuration-time
-option.  Include the ability to switch on/off the new font scaling,
-the font bounding box, as well as the overall functionality.
-
 Test pkfix (or other tools that replace bitmaps with Type 1 fonts)
 to ensure they are not broken.
 
@@ -98,17 +88,13 @@ LaserWriter?).
 
 Test with fonts with missing encoding files.
 
-Test with fonts with StandardEncoding.
-
 Do more bit-for-bit tests between old and new dvips.
 
 Do text extraction on random dvi files comparing results using
 Type 1 fonts and bitmapped fonts; is the same text extracted?
 Can we explain any differences?
 
-Should we consider the memory usage of the new setup?
-
-Write up docs and TUG presentation.
+Write up TUG presentation.
 
 # Phase two implementation
 
