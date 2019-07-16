@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # coding: utf-8
+#
+#   Fetched from https://apple.stackexchange.com/questions/155250/trying-to-convert-pdf-to-text-for-free/229009
+#   from answer by `benwiggy'.
+#
 
 import os, sys
 from Quartz import PDFDocument
