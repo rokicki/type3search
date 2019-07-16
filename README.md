@@ -80,17 +80,6 @@ Test with font compression.
 
 Test with memory limited sectioning.
 
-Test more PDF renderers.  Test ancient Postscript renderers (original
-LaserWriter?).
-
-Test with fonts with missing encoding files.
-
-Do more bit-for-bit tests between old and new dvips.
-
-Do text extraction on random dvi files comparing results using
-Type 1 fonts and bitmapped fonts; is the same text extracted?
-Can we explain any differences?
-
 Write up TUG presentation.
 
 # Phase two implementation

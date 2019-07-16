@@ -44,6 +44,10 @@ sub emitnames {
       emit("A/$key X ") ;
    }
 }
+sub resetcache {
+   $encnum = 0 ;
+   %cache = () ;
+}
 my %allenc = () ;
 sub loadall {
    my @keys = () ;
@@ -146,8 +150,11 @@ sub scansizes {
 }
 loadall() ;
 while (<>) {
-   if (/TeXDict begin \S+ \S+ \S+ (\S+) /) {
+   if (/TeXDict begin \d+ \d+ \d+ (\d+) /) {
       $hdpi = $1 ;
+   }
+   if (/^%DVIPSBeginSection/) {
+      resetcache() ;
    }
    if (/^%EndDVIPSBitmapFont/) {
       $hscale = $hdpi * $fontsize / 72 ;
