@@ -4,10 +4,6 @@ support searching and copying text.
 Status:  Works well for English-language text in Acrobat Reader,
 Chrome PDF viewer, and OSX Preview.
 
-Recent updates:  Changing way encoding files are stored for dvips
-to reduce size and count of files and to allow future improvements
-without changing the dvips binary.
-
 # Introduction
 
 In the spring of 2019 I was surprised to hear that PDFs generated
@@ -81,35 +77,6 @@ Test with font compression.
 Test with memory limited sectioning.
 
 Write up TUG presentation.
-
-# Phase two implementation
-
-After finishing the initial implementation, and discussing it with
-Karl, some improvements were suggested.
-
-* Instead of having one file for each font (which would be 1465
-new files if we supported all the MetaFont/Type 1 fonts in TeXLive),
-have a single composite file that gives all the encodings for all
-the fonts, sharing encodings between fonts that have identical
-encodings.  This new file is relatively tiny (300K) compared to the
-several megabytes separated files would have taken.
-
-* Because of this simple solution, eliminate the built-in encodings
-we planned to put into the dvips executable.
-
-* Make dvips oblivious to the actual contents of the encoding; don't
-try to pick out glyph names anymore.  Dvips doesn't do anything with
-them anyway.
-
-* Allow future file-driven extensions (without changing the dvips
-executable) by allowing the encoding files to also include new
-dictionaries or arbitrarily executable PostScript.  If someone can
-figure out a way to get Unicode code points from PostScript into
-PDF, this will permit non-English characters to work too.
-
-Because of all of this the current implementation is in a state of
-flux.  Everything in this repository should be up to date but the
-dvips changes in the texlive branch are not updated yet.
 
 # Rejected Ideas
 
