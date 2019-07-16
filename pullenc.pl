@@ -198,7 +198,8 @@ for $font (keys %needpfbfile) {
             $actualenc[$i] = $actualenc[161+$i] ;
          }
          for ($i=0; $i<23; $i++) {
-            print "Bad remap 2 $pfbseen{$font} $i $actualenc[10+$i] $actualenc[173+$i]\n" if $actualenc[10+$i] ne '/.notdef' && $actualenc[10+$i] ne $actualenc[173+$i] ;
+#  disable this message; too alarming
+#           print "Bad remap 2 $pfbseen{$font} $i $actualenc[10+$i] $actualenc[173+$i]\n" if $actualenc[10+$i] ne '/.notdef' && $actualenc[10+$i] ne $actualenc[173+$i] ;
             $actualenc[10+$i] = $actualenc[173+$i] ;
          }
          print "Bad remap 3\n" if $actualenc[127] ne '/.notdef' ;
