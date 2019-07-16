@@ -76,9 +76,6 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
-Test pkfix (or other tools that replace bitmaps with Type 1 fonts)
-to ensure they are not broken.
-
 Test with font compression.
 
 Test with memory limited sectioning.
