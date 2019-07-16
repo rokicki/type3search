@@ -1,4 +1,6 @@
 #
+$texlivedir = "/usr/local/texlive/2019/texmf-dist" ;
+#
 #   Let's read the glyph names that are predefined in the AGL from the
 #   AGLFN; these are the only bare names we really should use.
 #
@@ -12,13 +14,12 @@ while (<F>) {
 }
 close F ;
 my $count = scalar keys %unicode ;
-# print "Read $count glyph names from the Adobe Glyph Names for New Fonts.\n" ;
 #
 #   Find fonts that appear to have both mf and pfb files.  Match by name
 #   but keep track of directory.
 #
 $mfread = 0 ;
-open F, "find /usr/local/texlive/2019/texmf-dist/fonts/source -name '*.mf' |" or die "Can't fork" ;
+open F, "find $texlivedir/fonts/source -name '*.mf' |" or die "Can't fork" ;
 $ignorethese{$_}++ for qw(test bzrsetup local ligature gamma) ;
 while (<F>) {
    $mfread++ ;
@@ -39,7 +40,7 @@ print "Saw $mfread METAFONT files.\n" ;
 #   things we saw MF source for.
 #
 my $matchingpsfonts = 0 ;
-open F, "/usr/local/texlive/2019/texmf-dist/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
+open F, "$texlivedir/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
 while (<F>) {
    next if /^\s*%/ ;
    @f = split " ", $_ ;
@@ -60,7 +61,7 @@ print "Saw $matchingpsfonts matching PostScript fonts.\n" ;
 #   Now find encoding files.  For now we only store their location.
 #
 my $encfilesread = 0 ;
-open F, "find /usr/local/texlive/2019/texmf-dist/fonts -name '*.enc' |" or die "Can't fork" ;
+open F, "find $texlivedir/fonts -name '*.enc' |" or die "Can't fork" ;
 while (<F>) {
    chomp ;
    $fullname = $_ ;
@@ -106,11 +107,8 @@ for (keys %needencfile) {
 #   we just don't want to do all the fonts.  We also drop the cmcyr fonts.
 #
 my $pfbfilesseen = 0 ;
-open F, "find /usr/local/texlive/2019/texmf-dist/fonts/ -name '*.pfb' -o -name '*.pfa' |" or die "Can't fork" ;
+open F, "find $texlivedir/fonts/ -name '*.pfb' -o -name '*.pfa' |" or die "Can't fork" ;
 while (<F>) {
-#  next if /cbfonts/ ;
-#  next if /allrunes/ ;
-#  next if /cmcyr/ ;
    chomp ;
    $fullname = $_ ;
    $basename = $fullname ;
@@ -124,42 +122,10 @@ while (<F>) {
 print "Saw $pfbfilesseen PFB or PFA files.\n" ;
 my $files = scalar keys %pfbseen ;
 #
-#   Instead of pfb files we should read afm files.  We tried this, but we
-#   are missing almost all afm files for the pfb analogs of Metafont fonts
-#   so we don't do this.
-#
-if (0) {
-   open F, "find /usr/local/texlive/2019/texmf-dist/fonts/ -name '*.afm' |" or die "Can't fork" ;
-   while (<F>) {
-      next if /cbfonts/ ;
-      next if /allrunes/ ;
-      next if /cmcyr/ ;
-      chomp ;
-      $fullname = $_ ;
-      $basename = $fullname ;
-      $basename =~ s,.*/,, ;
-      $basename =~ s,.afm$,, ;
-      next if !$seen{$basename} ; # only look at AFMs that have MF source files
-      if (defined($afmseen{$basename})) {
-         print "For $basename see $afmseen{$basename} and $fullname\n" ;
-      }
-      $afmseen{$basename} = $fullname ;
-   }
-#
-#   Compare PFB and AFM keys.
-#
-   for $k (keys %afmseen) {
-      print "Saw AFM for $k but no PFB\n" if !defined($pfbseen{$k}) ;
-   }
-   for $k (keys %pfbseen) {
-      print "Saw PFB for $k but no AFM\n" if !defined($afmseen{$k}) ;
-   }
-}
-#
 #   Make sure we have tfm files for all of these.
 #
 my $tfmfilesseen = 0 ;
-open F, "find /usr/local/texlive/2019/texmf-dist/fonts/ -name '*.tfm' |" or die "Can't fork" ;
+open F, "find $texlivedir/fonts/ -name '*.tfm' |" or die "Can't fork" ;
 while (<F>) {
    chomp ;
    $fullname = $_ ;
@@ -374,7 +340,7 @@ for $font (keys %fontfile) {
    push @{$f{$r}}, $fn ;
 }
 open F, ">encs/dvips-all.enc" or die "Can't write dvips-all.enc" ;
-for (keys %f) {
+for (sort { $a cmp $b } keys %f) {
    $fontc = @{$f{$_}} ;
    print "$_: $validagl{$_} $invalidagl{$_} $fontc @{$f{$_}}\n" ;
    for (sort {$a cmp $b} @{$f{$_}}) {
