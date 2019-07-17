@@ -1,3 +1,4 @@
+use File::Find ;
 #
 $texlivedir = "/usr/local/texlive/2019/texmf-dist" ;
 #
@@ -17,66 +18,103 @@ while (<F>) {
 close F ;
 my $count = scalar keys %unicode ;
 #
-#   Find fonts that appear to have both mf and pfb files.  Match by name
-#   but keep track of directory.
+#   Now we scan the directory provided above, locating all Metafont,
+#   pfb, pfa, tfm, and enc files, and store their locations by their
+#   base names.
 #
-$mfread = 0 ;
-open F, "find $texlivedir/fonts/source -name '*.mf' |" or die "Can't fork" ;
-$ignorethese{$_}++ for qw(test bzrsetup local ligature gamma) ;
-while (<F>) {
-   $mfread++ ;
-   chomp ;
-   $fullname = $_ ;
-   $basename = $fullname ;
-   $basename =~ s,.*/,, ;
-   $basename =~ s,.mf$,, ;
-   next if $ignorethese{$basename} ;
-   if (defined($seen{$basename})) {
-      print "For $basename see $seen{$basename} and $fullname\n" ;
-   }
-   $seen{$basename} = $fullname ;
+sub findaux {
+   my $fn = $_ ;
+   my $basename ;
+   my $ext ;
+   ($basename, $ext) = /(.*)\.(.*)/ or return ;
+   $ext eq 'tfm' or $ext eq 'pfb' or $ext eq 'pfa' or $ext eq 'mf' or
+                    $ext eq 'enc' or return ;
+   $seen{$basename}{$ext} = $File::Find::name ;
 }
-print "Saw $mfread METAFONT files.\n" ;
+find(\&findaux, "$texlivedir/fonts") ;
+#
+#   Read a PFB or a PFA file for its encoding.
+#
+sub readpfbpfaencoding {
+   my $fn = shift ;
+   open F, "$fn" or die "Can't read $fn" ;
+   local $/ = undef ;
+   my @lines = split /[\n\r]+/, <F> ;
+   @actualenc = ('/.notdef') x 256 ;
+   my $isstandard = 0 ;
+   for (@lines) {
+      next if /^ *%/ ;
+      # this shows up in a number of PFB files to remap characters.
+      if (/dup dup 161 10 getinterval 0 exch putinterval dup dup 173 23 getinterval 10 exch putinterval dup dup 127 exch 196 get put/) {
+         for ($i=0; $i<10; $i++) {
+            print "Bad remap 1\n" if $actualenc[$i] ne '/.notdef' ;
+            $actualenc[$i] = $actualenc[161+$i] ;
+         }
+         for ($i=0; $i<23; $i++) {
+#  disable this message; too alarming
+#           print "Bad remap 2 $pfbseen{$font} $i $actualenc[10+$i] $actualenc[173+$i]\n" if $actualenc[10+$i] ne '/.notdef' && $actualenc[10+$i] ne $actualenc[173+$i] ;
+            $actualenc[10+$i] = $actualenc[173+$i] ;
+         }
+         print "Bad remap 3\n" if $actualenc[127] ne '/.notdef' ;
+         $actualenc[127] = $actualenc[196] ;
+         next ;
+      }
+      next if /dup  *(\d+)/ && @exist && !$exist[$1] ;
+      $isstandard++ if /Encoding/ && /StandardEncoding/ ;
+      if (m,dup  *(\d+) *(/\S+)  *put,) {
+         $glyphname = $2 ;
+         $code = $1 ;
+         $actualenc[$code] = $glyphname ;
+      }
+   }
+   close F ;
+   if ($isstandard) {
+      return ('StandardEncoding') ;
+   } else {
+      die "Bad length [@actualenc] from $fn" if @actualenc != 256 ;
+      return @actualenc ;
+   }
+}
+#
+#   Read a TFM file, only to find what characters really exist.
+#
+sub readtfm {
+   my $fn = shift ;
+   my $fh ;
+   open $fh, "<", $fn or die "Can't read $fn\n" ;
+   binmode $fh ;
+   local $/ = undef ;
+   my $s = <$fh> ;
+   my $lh = vec($s, 1, 16) ;
+   my $bc = vec($s, 2, 16) ;
+   my $ec = vec($s, 3, 16) ;
+   my @exist = (0) x 256 ;
+   my $c ;
+   for ($c=$bc; $c<=$ec; $c++) {
+      $exist[$c] = 1 if 0 != vec($s, 6+$lh+$c-$bc, 32) ;
+   }
+   return @exist ;
+}
 #
 #   Find the built psfonts.map file and read it.  Only keep lines that match
-#   things we saw MF source for.
+#   things we saw MF source for and have a TFM file for.
 #
 my $matchingpsfonts = 0 ;
-open F, "$texlivedir/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
-while (<F>) {
+open H, "$texlivedir/fonts/map/dvips/updmap/psfonts.map" or die "Can't read psfonts.map" ;
+while (<H>) {
    next if /^\s*%/ ;
    @f = split " ", $_ ;
-   next if !$seen{$f[0]} ;
-   /<([-_a-zA-Z0-9]+).pf[ab]/ or warn $_ ;
-   $fontfile{$f[0]} = $1 ;
-   $needpfbfile{$1}++ ;
-   $matchingpsfonts++ ;
-   if (/reencode/i) {
+   next if !$seen{$f[0]}{"mf"} || !$seen{$f[0]}{"tfm"} ;
+   /<([-_a-zA-Z0-9]+).(pf[ab])/ or warn $_ ;
+   my $pfbname = $1 ;
+   my $pfbext = $2 ;
+   die "Missing font $1 $2" if !$seen{$1}{$2} ;
+   $basename = $f[0] ;
+   if (/reencode/i) {  # locate and read the encoding file
       /<\[?([-_a-zA-Z0-9]+).enc/ or warn $_ ;
-      $encfile{$f[0]} = $1 ;
-      $needencfile{$1}++ ;
-   }
-}
-close F ;
-print "Saw $matchingpsfonts matching PostScript fonts.\n" ;
-#
-#   Now find encoding files.  For now we only store their location.
-#
-my $encfilesread = 0 ;
-open F, "find $texlivedir/fonts -name '*.enc' |" or die "Can't fork" ;
-while (<F>) {
-   chomp ;
-   $fullname = $_ ;
-   $basename = $fullname ;
-   $basename =~ s,.*/,, ;
-   $basename =~ s,.enc$,, ;
-   if ($needencfile{$basename}) {
-      die "Duplicated encoding file?" if $foundencfile{$basename} ;
-      $foundencfile{$basename}++ ;
-      $encfullpath{$basename} = $fullname ;
-      $encfilesread++ ;
-      open G, "$fullname" or die "Can't read encoding file $fullname" ;
-      @tokens = () ;
+      die "Missing encoding $1 enc" if !$seen{$1}{"enc"} ;
+      open G, "$seen{$1}{'enc'}" or die "Can't read encoding file" ;
+      my @tokens = () ;
       # tokenize into an array
       while (<G>) {
          chomp ;
@@ -92,63 +130,14 @@ while (<F>) {
          die "Space in parsed token?" if / / ;
       }
       $encoding{$basename} = [@tokens] ;
+   } else { # locate and read the PFB/PFA file
+      my $fn = $seen{$pfbname}{$pfbext} ;
+      die "Missing PFB or PFA file $pfbname $pfbext" if !$fn ;
+      $encoding{$basename} = [readpfbpfaencoding($fn)] ;
    }
+   $exist{$basename} = [readtfm($seen{$basename}{"tfm"})] ;
 }
-close F ;
-print "Read $encfilesread encoding files.\n" ;
-#
-#   Did we find all needed encoding files?
-#
-for (keys %needencfile) {
-   die "Missing encoding file $_" if !$foundencfile{$_} ;
-}
-#
-#   Do the same for PFB files now.  Except here we explicitly drop the
-#   rune fonts and the cbfonts; there are just too many of the latter,
-#   and the former have some issue with missing TFM files, and in general
-#   we just don't want to do all the fonts.  We also drop the cmcyr fonts.
-#
-my $pfbfilesseen = 0 ;
-open F, "find $texlivedir/fonts/ -name '*.pfb' -o -name '*.pfa' |" or die "Can't fork" ;
-while (<F>) {
-   chomp ;
-   $fullname = $_ ;
-   $basename = $fullname ;
-   $basename =~ s,.*/,, ;
-   $basename =~ s,.pf[ab]$,, ;
-   next if !$needpfbfile{$basename} ;
-   $pfbfilesseen++ ;
-   die "Double seen PFB file?" if defined($pfbseen{$basename}) ;
-   $pfbseen{$basename} = $fullname ;
-}
-print "Saw $pfbfilesseen PFB or PFA files.\n" ;
-my $files = scalar keys %pfbseen ;
-#
-#   Make sure we have tfm files for all of these.
-#
-my $tfmfilesseen = 0 ;
-open F, "find $texlivedir/fonts/ -name '*.tfm' |" or die "Can't fork" ;
-while (<F>) {
-   chomp ;
-   $fullname = $_ ;
-   $basename = $fullname ;
-   $basename =~ s,.*/,, ;
-   $basename =~ s,.tfm$,, ;
-   next if !defined($fontfile{$basename}) ;
-   $tfmfilesseen++ ;
-   $tfmseen{$basename}++ ;
-   $tfmfile{$basename} = $fullname ;
-}
-my @deleteme = () ;
-for (keys %fontfile) {
-   if (!defined($tfmseen{$_})) {
-      push @deleteme, $_ ;
-   }
-}
-for (@deleteme) {
-   delete $fontfile{$_} ;
-}
-print "Saw $tfmfilesseen TFM files; skipping ", (scalar @deleteme), " possibly good font files.\n" ;
+close H ;
 my $linepos = 0 ;
 my $lastwasspecial = 1 ;
 my $maxline = 76 ;
@@ -181,76 +170,6 @@ sub nameout {
    cmdout($s) ;
 }
 #
-$seq = 0 ;
-$oldslash = $/ ;
-my $pfbfilesread = 0 ;
-for $font (keys %needpfbfile) {
-   $pfbfilesread++ ;
-   open F, "$pfbseen{$font}" or die "Can't read $font ($pfbseen{$font})" ;
-   undef $/ ;
-   @lines = split /[\n\r]+/, <F> ;
-   @actualenc = ('/.notdef') x 256 ;
-   $chars = 0 ;
-   $isstandard = 0 ;
-   for (@lines) {
-      next if /^ *%/ ;
-      # this shows up in a number of PFB files to remap characters.
-      if (/dup dup 161 10 getinterval 0 exch putinterval dup dup 173 23 getinterval 10 exch putinterval dup dup 127 exch 196 get put/) {
-         for ($i=0; $i<10; $i++) {
-            print "Bad remap 1\n" if $actualenc[$i] ne '/.notdef' ;
-            $actualenc[$i] = $actualenc[161+$i] ;
-         }
-         for ($i=0; $i<23; $i++) {
-#  disable this message; too alarming
-#           print "Bad remap 2 $pfbseen{$font} $i $actualenc[10+$i] $actualenc[173+$i]\n" if $actualenc[10+$i] ne '/.notdef' && $actualenc[10+$i] ne $actualenc[173+$i] ;
-            $actualenc[10+$i] = $actualenc[173+$i] ;
-         }
-         print "Bad remap 3\n" if $actualenc[127] ne '/.notdef' ;
-         $actualenc[127] = $actualenc[196] ;
-         next ;
-      }
-      next if /dup  *(\d+)/ && @exist && !$exist[$1] ;
-      $isstandard++ if /Encoding/ && /StandardEncoding/ ;
-      if (m,dup  *(\d+) *(/\S+)  *put,) {
-         $glyphname = $2 ;
-         $code = $1 ;
-         $actualenc[$code] = $glyphname ;
-         $chars++ ;
-         if (defined($unicode{$glyphname})) {
-            $adobeglyph++ ;
-         } else {
-            $nonadobeglyph++ ;
-            push @missingglyphs, $glyphname ;
-         }
-      }
-   }
-   close F ;
-   if ($isstandard) {
-      die "Standard encoding, but also saw defs in $font" if $chars ;
-      $pfbenc{$font} = ['StandardEncoding'] ;
-   } else {
-      $pfbenc{$font} = [@actualenc] ;
-   }
-   $/ = $oldslash ;
-}
-print "Read $pfbfilesread PFB files.\n" ;
-sub readtfm {
-   my $fn = shift ;
-   my $fh ;
-   open $fh, "<", $fn or die "Can't read $fn\n" ;
-   binmode $fh ;
-   local $/ = undef ;
-   my $s = <$fh> ;
-   my $lh = vec($s, 1, 16) ;
-   my $bc = vec($s, 2, 16) ;
-   my $ec = vec($s, 3, 16) ;
-   my @exist = (0) x 256 ;
-   my $c ;
-   for ($c=$bc; $c<=$ec; $c++) {
-      $exist[$c] = 1 if 0 != vec($s, 6+$lh+$c-$bc, 32) ;
-   }
-   return @exist ;
-}
 sub writeenc {
    $linepos = 0 ;
    if (@enc == 1) {
@@ -277,7 +196,7 @@ sub writeenc {
       endofline() ;
    }
 }
-for $font (keys %fontfile) {
+for $font (keys %exist) {
 #
 #   At this point we should have an encoding from either the PFB/PFA
 #   file or the encoding file.
@@ -286,25 +205,12 @@ for $font (keys %fontfile) {
 #   that turned out to be really slow, so we actually read the files
 #   themselves.
 #
-   $fn = $font ;
-   $seq++ ;
-   @exist = readtfm($tfmfile{$fn}) ;
+   @enc = @{$encoding{$font}} ;
+   @exist = @{$exist{$font}} ;
    $adobeglyph = 0 ;
    $nonadobeglyph = 0 ;
    @missingglyphs = () ;
-   @enc = () ;
-   $isstandard = 0 ;
-   if ($encfile{$font}) {
-      $fromencfile++ ;
-      @enc = @{$encoding{$encfile{$font}}} ;
-   } elsif ($fontfile{$font}) {
-      $frompfbfile++ ;
-      @enc = @{$pfbenc{$fontfile{$font}}} ;
-   } else {
-      die "No encoding for $font\n" ;
-   }
    if (@enc == 1) {
-      die "Expected standard encoding but got [@enc]" if $enc[0] ne 'StandardEncoding' ;
       $isstandard = 1 ;
    } elsif (@enc == 256) {
       @badchars = () ;
@@ -322,7 +228,6 @@ for $font (keys %fontfile) {
          }
          $glyphname = substr($enc[$i], 1) ;
          next if $glyphname eq '.notdef' ;
-         $chars++ ;
          if (defined($unicode{$glyphname})) {
             $adobeglyph++ ;
          } else {
@@ -333,17 +238,15 @@ for $font (keys %fontfile) {
    } else {
       die "Bad enc length " . (scalar @enc) . " [@enc]" ;
    }
-   $/ = $oldslash ;
-   my $fn = $font ;
-   $enc{$fn} = [@enc] ;
+   $encoding{$font} = [@enc] ;
    if ($writeindividualfiles) {
-      open G, ">encs/dvips-$fn.enc" or die "Can't write $font encoding" ;
+      open G, ">encs/dvips-$font.enc" or die "Can't write $font encoding" ;
       writeenc() ;
       close G ;
    }
    my $r = join ',',@enc ;
    if (!defined($f{$r})) { # first time we saw this encoding
-      print "For font $fn saw $adobeglyph Adobe glyphs and $nonadobeglyph non-Adobe glyphs\n" ;
+      print "For font $font saw $adobeglyph Adobe glyphs and $nonadobeglyph non-Adobe glyphs\n" ;
       if (@missingglyphs) {
          $s = "   [@missingglyphs]" ;
          if (length($s) > 75) {
@@ -351,19 +254,15 @@ for $font (keys %fontfile) {
          }
          print "$s\n" ;
       }
-      $validagl{$r} = $adobeglyph ;
-      $invalidagl{$r} = $nonadobeglyph ;
    }
-   push @{$f{$r}}, $fn ;
+   push @{$f{$r}}, $font ;
 }
 open G, ">encs/dvips-all.enc" or die "Can't write dvips-all.enc" ;
 for (sort { $a cmp $b } keys %f) {
-   $fontc = @{$f{$_}} ;
    for (sort {$a cmp $b} @{$f{$_}}) {
       print G "$_:\n" ;
    }
-   @enc = @{$enc{$f{$_}[0]}} ;
+   @enc = @{$encoding{$f{$_}[0]}} ;
    writeenc() ;
 }
 close G ;
-print "Got encoding $fromencfile from encoding file and $frompfbfile from pfb file.\n" ;
