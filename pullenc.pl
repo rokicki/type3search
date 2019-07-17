@@ -332,10 +332,7 @@ for $font (keys %fontfile) {
       endofline() ;
    }
    close G ;
-   my $r = `md5 encs/dvips-$fn.enc` ;
-   chomp $r ;
-   @f = split " ", $r ;
-   $r = $f[-1] ;
+   my $r = join ',',@enc ;
    if (!defined($f{$r})) { # first time we saw this encoding
       print "For font $fn saw $adobeglyph Adobe glyphs and $nonadobeglyph non-Adobe glyphs\n" ;
       if (@missingglyphs) {
@@ -353,7 +350,7 @@ for $font (keys %fontfile) {
 open F, ">encs/dvips-all.enc" or die "Can't write dvips-all.enc" ;
 for (sort { $a cmp $b } keys %f) {
    $fontc = @{$f{$_}} ;
-   print "$_: $validagl{$_} $invalidagl{$_} $fontc @{$f{$_}}\n" ;
+   print "$validagl{$_} $invalidagl{$_} $fontc @{$f{$_}}\n" ;
    for (sort {$a cmp $b} @{$f{$_}}) {
       print F "$_:\n" ;
    }
