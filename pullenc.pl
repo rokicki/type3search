@@ -24,6 +24,7 @@ close F ;
 #   base names.
 #
 my %fullpath ;
+my $filecount = 0 ;
 sub findaux {
    my $fn = $_ ;
    my $basename ;
@@ -32,8 +33,10 @@ sub findaux {
    $ext eq 'tfm' or $ext eq 'pfb' or $ext eq 'pfa' or $ext eq 'mf' or
                     $ext eq 'enc' or return ;
    $fullpath{$basename}{$ext} = $File::Find::name ;
+   $filecount++ ;
 }
 find(\&findaux, "$texlivedir/fonts") ;
+print "Found $filecount files of possible interest.\n" ;
 #
 #   Read a PFB or a PFA file for its encoding.
 #
@@ -144,6 +147,8 @@ while (<H>) {
    $exist{$basename} = [readtfm($fullpath{$basename}{"tfm"})] ;
 }
 close H ;
+$filecount = scalar keys %exist ;
+print "Found $filecount encoded files to include.\n" ;
 my $linepos = 0 ;
 my $lastwasspecial = 1 ;
 my $maxline = 76 ;
