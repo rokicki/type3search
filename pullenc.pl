@@ -24,6 +24,7 @@ close F ;
 #   base names.
 #
 my %fullpath ;
+my %fullpathcnt ;
 my $filecount = 0 ;
 sub findaux {
    my $fn = $_ ;
@@ -33,6 +34,7 @@ sub findaux {
    $ext eq 'tfm' or $ext eq 'pfb' or $ext eq 'pfa' or $ext eq 'mf' or
                     $ext eq 'enc' or return ;
    $fullpath{$basename}{$ext} = $File::Find::name ;
+   $fullpathcnt{$basename}{$ext}++ ;
    $filecount++ ;
 }
 find(\&findaux, "$texlivedir/fonts") ;
@@ -116,12 +118,14 @@ while (<H>) {
    /<([-_a-zA-Z0-9]+).(pf[ab])/ or warn $_ ;
    my $pfbname = $1 ;
    my $pfbext = $2 ;
+   die "Duplicated PFB/PFA $pfbname" if $fullpathcnt{$pfbname}{$pfbext} > 1 ;
    die "Missing font $1 $2" if !$fullpath{$1}{$2} ;
    my $basename = $f[0] ;
    if (/reencode/i) {  # locate and read the encoding file
       /<\[?([-_a-zA-Z0-9]+).enc/ or warn $_ ;
       my $fn = $fullpath{$1}{"enc"} ;
       die "Missing encoding $1 enc" if !$fn ;
+      die "Duplicated encoding $1" if $fullpathcnt{$1}{"enc"} > 1 ;
       open G, $fn or die "Can't read encoding file" ;
       my @tokens = () ;
       # tokenize into an array
@@ -144,6 +148,7 @@ while (<H>) {
       die "Missing PFB or PFA file $pfbname $pfbext" if !$fn ;
       $encoding{$basename} = [readpfbpfaencoding($fn)] ;
    }
+   die "Duplicated TFM file $basename" if $fullpathcnt{$basename}{"tfm"} > 1 ;
    $exist{$basename} = [readtfm($fullpath{$basename}{"tfm"})] ;
 }
 close H ;
