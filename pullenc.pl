@@ -135,6 +135,7 @@ while (<F>) {
    next if !defined($fontfile{$basename}) ;
    $tfmfilesseen++ ;
    $tfmseen{$basename}++ ;
+   $tfmfile{$basename} = $fullname ;
 }
 my @deleteme = () ;
 for (keys %fontfile) {
@@ -231,26 +232,35 @@ for $font (keys %needpfbfile) {
    $/ = $oldslash ;
 }
 print "Read $pfbfilesread PFB files.\n" ;
+sub readtfm {
+   my $fn = shift ;
+   my $fh ;
+   open $fh, "<", $fn or die "Can't read $fn\n" ;
+   binmode $fh ;
+   local $/ = undef ;
+   my $s = <$fh> ;
+   my $lh = vec($s, 1, 16) ;
+   my $bc = vec($s, 2, 16) ;
+   my $ec = vec($s, 3, 16) ;
+   my @exist = (0) x 256 ;
+   my $c ;
+   for ($c=$bc; $c<=$ec; $c++) {
+      $exist[$c] = 1 if 0 != vec($s, 6+$lh+$c-$bc, 32) ;
+   }
+   return @exist ;
+}
 for $font (keys %fontfile) {
 #
 #   At this point we should have an encoding from either the PFB/PFA
 #   file or the encoding file.
 #
-#   We read the characters actually defined with tftopl.
+#   We read the characters actually defined.  We used to use tftopl but
+#   that turned out to be really slow, so we actually read the files
+#   themselves.
 #
    $fn = $font ;
    $seq++ ;
-   @exist = (0) x 256 ;
-   $/ = $oldslash ;
-   open F, "tftopl $fn 2>/dev/null |" or die "Can't run tftopl" ;
-   while (<F>) {
-      if (/^\(CHARACTER O (\d+)/) {
-         $exist[oct($1)] = 1 ;
-      } elsif (/^\(CHARACTER C (\S)/) {
-         $exist[ord($1)] = 1 ;
-      }
-   }
-   close F ;
+   @exist = readtfm($tfmfile{$fn}) ;
    $adobeglyph = 0 ;
    $nonadobeglyph = 0 ;
    @missingglyphs = () ;
