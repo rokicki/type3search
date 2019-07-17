@@ -1,6 +1,8 @@
 #
 $texlivedir = "/usr/local/texlive/2019/texmf-dist" ;
 #
+$writeindividualfiles = 0 ;
+#
 #   Let's read the glyph names that are predefined in the AGL from the
 #   AGLFN; these are the only bare names we really should use.
 #
@@ -249,6 +251,32 @@ sub readtfm {
    }
    return @exist ;
 }
+sub writeenc {
+   $linepos = 0 ;
+   if (@enc == 1) {
+      print G "StandardEncoding\n" ;
+   } else {
+      specialout('[') ;
+      my $i = 0 ;
+      while ($i < 256) {
+         my $j = $i ;
+         $j++ while $j < 256 && $enc[$j] eq '/.notdef' ;
+         if ($j-$i > 2) {
+            cmdout($j-$i) ;
+            specialout('{') ;
+            nameout('/.notdef') ;
+            specialout('}') ;
+            cmdout('repeat') ;
+            $i = $j ;
+         } else {
+            nameout($enc[$i]) ;
+            $i++ ;
+         }
+      }
+      specialout(']') ;
+      endofline() ;
+   }
+}
 for $font (keys %fontfile) {
 #
 #   At this point we should have an encoding from either the PFB/PFA
@@ -306,32 +334,13 @@ for $font (keys %fontfile) {
       die "Bad enc length " . (scalar @enc) . " [@enc]" ;
    }
    $/ = $oldslash ;
-   open G, ">encs/dvips-$fn.enc" or die "Can't write $font encoding" ;
-   $linepos = 0 ;
-   if ($isstandard) {
-      print G "StandardEncoding\n" ;
-   } else {
-      specialout('[') ;
-      $i = 0 ;
-      while ($i < 256) {
-         $j = $i ;
-         $j++ while $j < 256 && $enc[$j] eq '/.notdef' ;
-         if ($j-$i > 2) {
-            cmdout($j-$i) ;
-            specialout('{') ;
-            nameout('/.notdef') ;
-            specialout('}') ;
-            cmdout('repeat') ;
-            $i = $j ;
-         } else {
-            nameout($enc[$i]) ;
-            $i++ ;
-         }
-      }
-      specialout(']') ;
-      endofline() ;
+   my $fn = $font ;
+   $enc{$fn} = [@enc] ;
+   if ($writeindividualfiles) {
+      open G, ">encs/dvips-$fn.enc" or die "Can't write $font encoding" ;
+      writeenc() ;
+      close G ;
    }
-   close G ;
    my $r = join ',',@enc ;
    if (!defined($f{$r})) { # first time we saw this encoding
       print "For font $fn saw $adobeglyph Adobe glyphs and $nonadobeglyph non-Adobe glyphs\n" ;
@@ -347,18 +356,14 @@ for $font (keys %fontfile) {
    }
    push @{$f{$r}}, $fn ;
 }
-open F, ">encs/dvips-all.enc" or die "Can't write dvips-all.enc" ;
+open G, ">encs/dvips-all.enc" or die "Can't write dvips-all.enc" ;
 for (sort { $a cmp $b } keys %f) {
    $fontc = @{$f{$_}} ;
-   print "$validagl{$_} $invalidagl{$_} $fontc @{$f{$_}}\n" ;
    for (sort {$a cmp $b} @{$f{$_}}) {
-      print F "$_:\n" ;
+      print G "$_:\n" ;
    }
-   open G, "encs/dvips-$f{$_}[0].enc" or die "Can't read file" ;
-   while (<G>) {
-      print F $_ ;
-   }
-   close G ;
+   @enc = @{$enc{$f{$_}[0]}} ;
+   writeenc() ;
 }
-close F ;
+close G ;
 print "Got encoding $fromencfile from encoding file and $frompfbfile from pfb file.\n" ;
