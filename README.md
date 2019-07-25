@@ -4,6 +4,12 @@ support searching and copying text.
 Status:  Works well for English-language text in Acrobat Reader,
 Chrome PDF viewer, and OSX Preview.
 
+Things to try in your favorite convertor and previewer:
+What happens with the word "file" (ligature fi)?  What happens
+with cmmi10 numbers (oldstyle glyphs)?  What happens with the
+kern in "book", or with rivers?  What happens with tables?
+What happens with cmsy10?
+
 # Introduction
 
 In the spring of 2019 I was surprised to hear that PDFs generated
@@ -72,9 +78,9 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
-Test with font compression.
-
-Test with memory limited sectioning.
+Mention somewhere some non-obvious gotchas.  For instance,
+cmmi10 numbers don't work in OSX Preview (but do in Chrome
+and Acrobat) (the glyph names include oldstyle).
 
 Write up TUG presentation.
 
