@@ -78,6 +78,10 @@ these years---and it could have easily been fixed at any time.
 
 # Things that need doing
 
+If encodings are not found, using StandardEncoding will break
+certain fonts, so either abandon this direction or come
+up with something more robust.
+
 Mention somewhere some non-obvious gotchas.  For instance,
 cmmi10 numbers don't work in OSX Preview (but do in Chrome
 and Acrobat) (the glyph names include oldstyle).

@@ -173,7 +173,7 @@ while (<>) {
          emitnames($allenc{$fn}) ;
       } else {
          warn "Cannot find encoding for $fn.enc" ;
-         print "StandardEncoding\n" ;
+         print "IEn\n" ;
       }
       scansizes() ;
       print "IEn S/IEn X FBB FMat/FMat[$hsi 0 0 -$hsi 0 0]N\n" ;
