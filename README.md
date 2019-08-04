@@ -4,7 +4,7 @@ support searching and copying text.
 Status:  Works well for English-language text in Acrobat Reader,
 Chrome PDF viewer, and OSX Preview.
 
-Things to try in your favorite convertor and previewer:
+Things to try in your favorite converter and previewer:
 What happens with the word "file" (ligature fi)?  What happens
 with cmmi10 numbers (oldstyle glyphs)?  What happens with the
 kern in "book", or with rivers?  What happens with tables?
