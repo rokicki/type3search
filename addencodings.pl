@@ -8,12 +8,15 @@ my $hdpi = 0 ;
 my $hscale = 0 ;
 my $rewritebb = 1 ;
 my $scalefont = 1 ;
+my $deduplicate = 0 ;
 while (@ARGV && $ARGV[0] =~ /^-/) {
    my $arg = shift @ARGV ;
    if ($arg eq '--nofontbb') {
       $rewritebb = 0 ;
    } elsif ($arg eq '--noscale') {
       $scalefont = 0 ;
+   } elsif ($arg eq '--deduplicate') {
+      $deduplicate = 1 ;
    } else {
       die "Bad arg; should be one of --nofontbb or --noscale." ;
    }
@@ -34,7 +37,7 @@ sub emit {
 my $encnum = 0 ;
 sub emitnames {
    my $cacheable = shift ;
-   if (defined($cache{$cacheable})) {
+   if ($deduplicate && defined($cache{$cacheable})) {
       # we use load to get the value and defer execution.
       print "/$cache{$cacheable} load\n" ;
    } else {
