@@ -19,8 +19,8 @@ FILE *getit(const char *s) {
    if (getc(f) != 'P' || getc(f) != '4' || getc(f) != 10)
       error("! not a PPM file?") ;
    int tw=-1, th=-1 ;
-   while (getc(f) != 10) // skip comment
-      ;
+// while (getc(f) != 10) // skip comment
+//    ;
    if (fscanf(f, "%d %d", &tw, &th) != 2)
       error("! didn't get width/height") ;
    if (getc(f) != 10)
