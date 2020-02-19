@@ -2,8 +2,9 @@
 #   Given a dvips file with bitmap fonts, add the appropriate font
 #   encodings, bounding box, and scale.
 #
+use strict ;
 my @names ;
-my $loc ;
+my $loc = 0 ;
 my $hdpi = 0 ;
 my $hscale = 0 ;
 my $rewritebb = 1 ;
@@ -35,6 +36,8 @@ sub emit {
    $loc += length($s) ;
 }
 my $encnum = 0 ;
+my %cache ;
+my $cacheable ;
 sub emitnames {
    my $cacheable = shift ;
    if ($deduplicate && defined($cache{$cacheable})) {
@@ -74,11 +77,22 @@ sub loadall {
       $allenc{$_} = $enc for @keys ;
    }
 }
-@k = () ;
-$keep = 0 ;
-$fn = undef ;
-$lastcc = 0 ;
+my @k = () ;
+my $keep = 0 ;
+my $fn = undef ;
+my $lastcc = 0 ;
 my $slop = 1 ;
+my $llx ;
+my $lly ;
+my $urx ;
+my $ury ;
+my $end ;
+my $str ;
+my $minx ;
+my $maxx ;
+my $miny ;
+my $maxy ;
+my $at ;
 sub scansizes {
    $str = join '', @k ;
    $at = -1 ;
@@ -90,15 +104,16 @@ sub scansizes {
    while (1) {
       $at = index($str, ">", $at+1) ;
       last if $at < 0 ;
-      $endhex = $at - 1 ;
+      my $endhex = $at - 1 ;
       $at++ ;
-      @numargs = () ;
+      my @numargs = () ;
+      my $c ;
       while (1) {
          $at++ while $at < $end && substr($str, $at, 1) le ' ' ;
          last if $at >= $end ;
          $c = substr($str, $at, 1) ;
          if ($c eq '-' || ('0' le $c && $c le '9')) {
-            $num = '' ;
+            my $num = '' ;
             while ($c eq '-' || ('0' le $c && $c le '9')) {
                $num .= $c ;
                $at++ ;
@@ -120,7 +135,7 @@ sub scansizes {
       }
       if (@numargs < 4) {
          # find the previous 10 hex digits
-         $digs = '' ;
+         my $digs = '' ;
          while ($endhex > 0 && length($digs) < 10) {
             $c = substr($str, $endhex, 1) ;
             if (('0' le $c && $c le '9') || ('A' le $c && $c le 'Z')) {
@@ -131,6 +146,7 @@ sub scansizes {
             $endhex-- ;
          }
          die "Did not find ten digs" if length($digs) != 10 ;
+         my $i ;
          for ($i=0; $i<5; $i++) {
             splice(@numargs, $i, 0, hex(substr($digs, 2*$i, 2))) ;
          }
@@ -152,7 +168,28 @@ sub scansizes {
    }
 }
 loadall() ;
+my $bufptr = 0 ;
+my @buf ;
+my $landscape = 0 ;
+my $insetup = 0 ;
 while (<>) {
+   push @buf, $_ ;
+   $insetup = 1 if /^%%BeginSetup/ ;
+   last if /^%%EndSetup/ ;
+   $landscape = 1 if /\@landscape/ && $insetup ;
+}
+my $addview = 1 ;
+my $fontsize ;
+my $hsi ;
+my $fid ;
+my $viewori ;
+while (1) {
+   if ($bufptr < @buf) {
+      $_ = $buf[$bufptr++] ;
+   } else {
+      $_ = <> ;
+      last if !$_ ;
+   }
    if (/TeXDict begin \d+ \d+ \d+ (\d+) /) {
       $hdpi = $1 ;
    }
@@ -166,10 +203,12 @@ while (<>) {
       my @cacheable = () ;
       if (open E, "dvips-$fn.enc") {
          print STDERR "Reading dvips-$fn.enc\n" ;
+         my $safeunderbar = $_ ;
          while (<E>) {
             push @cacheable, $_ ;
          }
          close E ;
+         $_ = $safeunderbar ;
          $cacheable = join '', @cacheable ;
          emitnames($cacheable) ;
       } elsif (defined($allenc{$fn})) {
@@ -191,11 +230,24 @@ while (<>) {
    } else {
       print ;
    }
+   if (/^%%EndComments/ && $addview) {
+      if ($landscape) {
+         $viewori = "0 -1 1 0" ;
+      } else {
+         $viewori = "1 0 0 1" ;
+      }
+      print <<EOF ;
+%%BeginDefaults
+%%ViewingOrientation: $viewori
+%%EndDefaults
+EOF
+      $addview = 0 ;
+   }
    if (/^%DVIPSBitmapFont/) {
       @k = () ;
       $keep = 1 ;
       chomp ;
-      @f = split " ", $_ ;
+      my @f = split " ", $_ ;
       $fid = $f[1] ;
       $fn = $f[2] ;
       $fontsize = $f[3] ;
